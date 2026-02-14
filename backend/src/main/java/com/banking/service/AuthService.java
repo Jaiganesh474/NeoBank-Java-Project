@@ -155,7 +155,10 @@ public class AuthService {
                     System.out.println("SUCCESS: Twilio SMS sent to " + identifier);
                 } catch (Exception e) {
                     System.err.println("CRITICAL: Twilio SMS failed: " + e.getMessage());
+                    throw new RuntimeException("Failed to send authorization SMS: " + e.getMessage());
                 }
+            } else {
+                throw new RuntimeException("SMS service is not configured for authorization.");
             }
 
             // Always log
@@ -367,7 +370,10 @@ public class AuthService {
                         .create();
             } catch (Exception e) {
                 System.err.println("CRITICAL: Twilio Forgot PIN SMS failed: " + e.getMessage());
+                throw new RuntimeException("Failed to send PIN reset SMS: " + e.getMessage());
             }
+        } else {
+            throw new RuntimeException("SMS service is not configured for PIN recovery.");
         }
 
         return cleanPhone.length() >= 10 ? "******" + cleanPhone.substring(cleanPhone.length() - 4) : cleanPhone;
@@ -419,9 +425,14 @@ public class AuthService {
                         new com.twilio.type.PhoneNumber(twilioPhoneNumber),
                         "NeoBank: Your login verification code is " + otp + ". Valid for 5 mins.")
                         .create();
+                System.out.println("SUCCESS: Twilio Login SMS sent to " + cleanPhone);
             } catch (Exception e) {
                 System.err.println("CRITICAL: Twilio Login SMS failed: " + e.getMessage());
+                throw new RuntimeException("Failed to send SMS: " + e.getMessage());
             }
+        } else {
+            System.out.println("DEBUG: Twilio not configured properly. SID: " + twilioAccountSid);
+            throw new RuntimeException("SMS service is not configured on the server.");
         }
     }
 
