@@ -123,19 +123,27 @@ export const resendOtp = async (email) => {
 };
 
 export const fetchCurrentUser = async () => {
-    const response = await api.get('/auth/me');
-    if (response.data.id) {
-        localStorage.setItem('user', JSON.stringify({
-            id: response.data.id,
-            email: response.data.email,
-            firstName: response.data.firstName,
-            roles: response.data.roles,
-            lastLogin: response.data.lastLogin,
-            phoneNumber: response.data.phoneNumber,
-            profileImageUrl: response.data.profileImageUrl,
-            tpinSet: response.data.tpinSet,
-            loginPinSet: response.data.loginPinSet
-        }));
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+        const response = await api.get('/auth/me');
+        if (response.data.id) {
+            localStorage.setItem('user', JSON.stringify({
+                id: response.data.id,
+                email: response.data.email,
+                firstName: response.data.firstName,
+                roles: response.data.roles,
+                lastLogin: response.data.lastLogin,
+                phoneNumber: response.data.phoneNumber,
+                profileImageUrl: response.data.profileImageUrl,
+                tpinSet: response.data.tpinSet,
+                loginPinSet: response.data.loginPinSet
+            }));
+        }
+        return response.data;
+    } catch (error) {
+        console.warn("User session not found or expired.");
+        return null;
     }
-    return response.data;
 };
