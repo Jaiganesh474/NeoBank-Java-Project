@@ -1,0 +1,17 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build
+backend/target/
+frontend/dist/
+node_modules/
+.env
+*.log
+serviceAccountKey.json
+
+# OS
+.DS_Store
+Thumbs.db
