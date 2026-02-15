@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.banking.payload.FirebaseLoginRequest;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -195,6 +198,55 @@ public class AuthController {
                 } catch (Exception e) {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                         .body(new ApiResponse(false, e.getMessage()));
+                }
+        }
+
+        @PostMapping("/firebase-signin")
+        public ResponseEntity<?> authenticateFirebaseUser(@Valid @RequestBody FirebaseLoginRequest loginRequest) {
+                try {
+                        FirebaseToken decodedToken = FirebaseAuth.getInstance()
+                                        .verifyIdToken(loginRequest.getIdToken());
+                        String email = decodedToken.getEmail();
+
+                        if (email == null) {
+                                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                                .body(new ApiResponse(false, "Firebase token does not contain email"));
+                        }
+
+                        User user = userRepository.findByEmail(email).orElseGet(() -> {
+                                return userService.registerFirebaseUser(decodedToken);
+                        });
+
+                        UserPrincipal userPrincipal = UserPrincipal.create(user);
+                        Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null,
+                                        userPrincipal.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                        String jwt = tokenProvider.generateToken(authentication);
+                        String refreshToken = tokenProvider.generateRefreshToken(authentication);
+
+                        List<String> roles = userPrincipal.getAuthorities().stream()
+                                        .map(GrantedAuthority::getAuthority)
+                                        .collect(Collectors.toList());
+
+                        String lastLoginStr = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
+                        user.setLastLogin(java.time.LocalDateTime.now());
+                        userRepository.save(user);
+
+                        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, refreshToken,
+                                        userPrincipal.getId(),
+                                        userPrincipal.getEmail(),
+                                        userPrincipal.getFirstName(),
+                                        roles,
+                                        lastLoginStr,
+                                        user.getPhoneNumber(),
+                                        user.getProfileImageUrl(),
+                                        user.getTpinSet(),
+                                        user.getLoginPinSet()));
+                } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                        .body(new ApiResponse(false,
+                                                        "Firebase token verification failed: " + e.getMessage()));
                 }
         }
 
