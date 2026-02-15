@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { login, firebaseLogin, loginByPin, requestLoginOtp, loginByOtp } from '../services/auth.service';
 import { motion } from 'framer-motion';
 import { FcGoogle } from 'react-icons/fc';
-import { signInWithGoogleRedirect, handleRedirectResult } from '../firebase';
+import { signInWithGoogleRedirect } from '../firebase';
 import './Auth.css';
 import { FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -21,28 +21,6 @@ const Login = () => {
     const [otpLoading, setOtpLoading] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const checkRedirect = async () => {
-            try {
-                const idToken = await handleRedirectResult();
-                if (idToken) {
-                    setLoading(true);
-                    const user = await firebaseLogin(idToken);
-                    if (user.roles && user.roles.includes('ROLE_ADMIN')) {
-                        navigate('/admin');
-                    } else {
-                        navigate('/dashboard');
-                    }
-                }
-            } catch (err) {
-                console.error("Redirect check failed", err);
-                setError('Google login failed. Please try again.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        checkRedirect();
-    }, [navigate]);
 
     const handleRequestOtp = async () => {
         if (!phoneNumber || phoneNumber.length < 10) {
