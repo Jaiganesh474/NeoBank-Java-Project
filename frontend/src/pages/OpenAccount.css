@@ -466,8 +466,13 @@
 }
 
 @media (max-width: 600px) {
+    .open-account-content {
+        padding: 1rem;
+    }
+
     .glass-panel-premium {
-        padding: 2rem 1.5rem;
+        padding: 2rem 1.25rem;
+        border-radius: 24px;
     }
 
     .form-row {
@@ -476,6 +481,39 @@
     }
 
     .card-header-premium h1 {
-        font-size: 1.8rem;
+        font-size: 1.75rem;
+    }
+
+    .card-header-premium {
+        margin-bottom: 2rem;
+    }
+
+    .step-indicator {
+        margin-bottom: 2.5rem;
+        padding: 0 0.5rem;
+    }
+
+    .step-dot {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .step-line {
+        left: 1.5rem;
+        right: 1.5rem;
+    }
+
+    .premium-input {
+        padding: 0.85rem 0.85rem 0.85rem 2.8rem;
+        font-size: 16px;
+    }
+
+    .input-icon {
+        left: 1rem;
+    }
+
+    .btn-premium {
+        padding: 1rem;
     }
 }

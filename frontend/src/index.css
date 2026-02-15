@@ -65,6 +65,39 @@ body {
   min-height: 100vh;
 }
 
+/* Responsive Container */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+/* Typography Fluidity */
+h1 {
+  font-size: clamp(2rem, 8vw, 4rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 6vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
+}
+
+.hide-on-mobile {
+  @media (max-width: 768px) {
+    display: none !important;
+  }
+}
+
 /* Glassmorphism Utility */
 .glass-effect {
   background: var(--glass);

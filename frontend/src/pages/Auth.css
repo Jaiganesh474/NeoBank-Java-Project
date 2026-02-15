@@ -244,7 +244,45 @@
 }
 
 @media (max-width: 640px) {
+    .auth-container {
+        padding: 1rem;
+        align-items: flex-start;
+        padding-top: 2rem;
+    }
+
     .auth-card {
-        padding: 2rem;
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+
+    .auth-card h2 {
+        font-size: 1.75rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-group input {
+        font-size: 16px;
+        /* Prevents auto-zoom on iOS */
+        padding: 0.75rem;
+    }
+
+    .auth-btn {
+        height: 48px;
+    }
+
+    .divider {
+        margin: 1.5rem 0;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Stack tabs on very small screens if they overlap */
+    .auth-card div[style*="display: flex"] {
+        flex-direction: column !important;
+        gap: 8px !important;
     }
 }
