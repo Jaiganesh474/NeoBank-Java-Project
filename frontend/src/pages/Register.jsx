@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { register, firebaseLogin, verifyRegistration, resendOtp } from '../services/auth.service';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUser, FaEnvelope, FaLock, FaKey, FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
-import { signInWithGoogle } from '../firebase';
+import { signInWithGoogleRedirect, handleRedirectResult } from '../firebase';
 import './Auth.css';
 
 const Register = () => {
@@ -19,6 +19,25 @@ const Register = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkRedirect = async () => {
+            try {
+                const idToken = await handleRedirectResult();
+                if (idToken) {
+                    setLoading(true);
+                    await firebaseLogin(idToken);
+                    navigate('/dashboard');
+                }
+            } catch (err) {
+                console.error("Redirect check failed", err);
+                setError('Google sign-up failed. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        checkRedirect();
+    }, [navigate]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -61,11 +80,9 @@ const Register = () => {
         }
     };
 
-    const handleGoogleSignup = async () => {
+    const handleGoogleSignup = () => {
         try {
-            const idToken = await signInWithGoogle();
-            await firebaseLogin(idToken);
-            navigate('/dashboard');
+            signInWithGoogleRedirect();
         } catch (err) {
             setError('Google sign-up failed');
         }
