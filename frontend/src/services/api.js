@@ -3,11 +3,13 @@ import axios from 'axios';
 const getBaseURL = () => {
   const envUrl = import.meta.env.VITE_API_BASE_URL;
   if (envUrl) {
-    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+    const finalUrl = envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+    console.log("API: Using VITE_API_BASE_URL:", finalUrl);
+    return finalUrl;
   }
 
   if (import.meta.env.PROD) {
-    console.warn("VITE_API_BASE_URL is not set in production! Requests might fail if the backend is on a different domain.");
+    console.warn("API: VITE_API_BASE_URL is NOT set! Defaulting to same-domain /api. This only works for monoliths.");
     return '/api';
   }
 
