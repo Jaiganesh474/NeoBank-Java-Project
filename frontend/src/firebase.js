@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAUv0iPTbgGcEYerEohWeHETTt-vHqHRP8",
@@ -21,24 +21,6 @@ export const signInWithGoogle = async () => {
         return idToken;
     } catch (error) {
         console.error("Firebase Auth Error", error);
-        throw error;
-    }
-};
-
-export const signInWithGoogleRedirect = () => {
-    signInWithRedirect(auth, googleProvider);
-};
-
-export const handleRedirectResult = async () => {
-    try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-            const idToken = await result.user.getIdToken();
-            return idToken;
-        }
-        return null;
-    } catch (error) {
-        console.error("Redirect Auth Error", error);
         throw error;
     }
 };

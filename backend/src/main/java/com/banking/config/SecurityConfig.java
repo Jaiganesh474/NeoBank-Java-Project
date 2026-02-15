@@ -2,7 +2,6 @@ package com.banking.config;
 
 import com.banking.security.CustomUserDetailsService;
 import com.banking.security.FirebaseAuthenticationFilter;
-import com.banking.security.JwtAuthenticationEntryPoint;
 import com.banking.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +34,6 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final FirebaseAuthenticationFilter firebaseAuthenticationFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${cors.allowed-origins}")
@@ -57,8 +55,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler));
+                .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

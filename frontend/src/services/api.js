@@ -6,7 +6,6 @@ const api = axios.create({
     : (import.meta.env.PROD ? '/api' : 'http://localhost:8080/api'),
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
   },
 });
 
