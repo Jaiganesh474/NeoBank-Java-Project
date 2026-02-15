@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class BankingSystemApplication {
 
     public static void main(String[] args) {
+        System.setProperty("java.net.preferIPv4Stack", "true");
         SpringApplication.run(BankingSystemApplication.class, args);
     }
 }
