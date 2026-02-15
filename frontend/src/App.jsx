@@ -20,7 +20,6 @@ import Settings from './pages/Settings';
 import Transactions from './pages/Transactions';
 import AccountDetails from './pages/AccountDetails';
 import { AboutUs, Careers, Press, DataPrivacy, FraudCare, Insurance, HelpCenter, ContactUs, ApiDocs, PrivacyPolicy, TermsOfService } from './pages/FooterPages';
-import { toast } from 'react-toastify';
 
 function App() {
   return (
@@ -70,30 +69,21 @@ const AuthRedirectHandler = () => {
 
   useEffect(() => {
     const handleRedirect = async () => {
-      // Only process redirect results if we are on a relevant page
-      const authPaths = ['/login', '/register', '/', '/index.html'];
-      if (authPaths.includes(location.pathname)) {
+      // Only process redirect results if we are on a page where it might happen
+      // or if there's a specific query param Firebase adds
+      if (location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/' || location.pathname === '/index.html') {
         try {
           const idToken = await handleRedirectResult();
           if (idToken) {
-            toast.info("Google Authentication successful! Syncing with NeoBank...", { toastId: 'auth-syncing' });
-
             const user = await firebaseLogin(idToken);
-            if (user) {
-              toast.success(`Welcome back, ${user.firstName}! Redirecting to dashboard...`);
-              if (user.roles && user.roles.includes('ROLE_ADMIN')) {
-                navigate('/admin');
-              } else {
-                navigate('/dashboard');
-              }
-            } else {
-              throw new Error("No user data returned from backend");
+            if (user && user.roles && user.roles.includes('ROLE_ADMIN')) {
+              navigate('/admin');
+            } else if (user) {
+              navigate('/dashboard');
             }
           }
         } catch (error) {
           console.error("Auth redirect processing failed", error);
-          const errorMsg = error.response?.data?.message || error.message || "Failed to sync with backend";
-          toast.error(`Sign-in failed: ${errorMsg}. Please try local login.`, { toastId: 'auth-error' });
         }
       }
     };

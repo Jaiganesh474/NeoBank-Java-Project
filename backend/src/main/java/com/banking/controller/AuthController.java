@@ -203,38 +203,25 @@ public class AuthController {
 
         @PostMapping("/firebase-signin")
         public ResponseEntity<?> authenticateFirebaseUser(@Valid @RequestBody FirebaseLoginRequest loginRequest) {
-                System.out.println("DEBUG: Entering firebase-signin endpoint");
                 try {
-                        if (loginRequest.getIdToken() == null) {
-                                System.out.println("ERROR: Missing idToken in request");
-                                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                                .body(new ApiResponse(false, "ID Token is missing"));
-                        }
-
-                        System.out.println("DEBUG: Verifying Firebase ID Token...");
                         FirebaseToken decodedToken = FirebaseAuth.getInstance()
                                         .verifyIdToken(loginRequest.getIdToken());
                         String email = decodedToken.getEmail();
-                        System.out.println("DEBUG: Firebase Token Verified. Email: " + email);
 
                         if (email == null) {
-                                System.out.println("ERROR: Firebase token does not contain email");
                                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                                 .body(new ApiResponse(false, "Firebase token does not contain email"));
                         }
 
                         User user = userRepository.findByEmail(email).orElseGet(() -> {
-                                System.out.println("DEBUG: User not found. Registering new Firebase user: " + email);
                                 return userService.registerFirebaseUser(decodedToken);
                         });
 
-                        System.out.println("DEBUG: Creating UserPrincipal and Authentication");
                         UserPrincipal userPrincipal = UserPrincipal.create(user);
                         Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null,
                                         userPrincipal.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                        System.out.println("DEBUG: Generating JWT Tokens");
                         String jwt = tokenProvider.generateToken(authentication);
                         String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
@@ -246,7 +233,6 @@ public class AuthController {
                         user.setLastLogin(java.time.LocalDateTime.now());
                         userRepository.save(user);
 
-                        System.out.println("DEBUG: Firebase Login Successful for user: " + email);
                         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, refreshToken,
                                         userPrincipal.getId(),
                                         userPrincipal.getEmail(),
@@ -258,10 +244,9 @@ public class AuthController {
                                         user.getTpinSet(),
                                         user.getLoginPinSet()));
                 } catch (Exception e) {
-                        System.out.println("ERROR: Firebase signin failed: " + e.getMessage());
-                        e.printStackTrace();
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                        .body(new ApiResponse(false, "Auth failed: " + e.getMessage()));
+                                        .body(new ApiResponse(false,
+                                                        "Firebase token verification failed: " + e.getMessage()));
                 }
         }
 
