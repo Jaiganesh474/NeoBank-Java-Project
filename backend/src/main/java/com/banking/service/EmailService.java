@@ -11,7 +11,7 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    @Async
+    // @Async (Temporarily disabled to diagnose connection issues)
     public void sendOtpEmail(String to, String otp) {
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
@@ -41,7 +41,9 @@ public class EmailService {
             helper.setText(htmlContent, true);
             mailSender.send(message);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error sending email: " + e.getMessage());
+            throw new RuntimeException(
+                    "Email service is currently unavailable. Please try again later. Details: " + e.getMessage());
         }
     }
 }

@@ -180,6 +180,14 @@ public class AuthService {
             System.out.println("   YOUR CODE IS: " + otp);
             System.out.println("================================================\n");
 
+            // SEND REAL EMAIL
+            try {
+                emailService.sendOtpEmail(identifier, otp);
+                System.out.println("SUCCESS: Action OTP email sent to " + identifier);
+            } catch (Exception e) {
+                System.err.println("CRITICAL: Action OTP email failed: " + e.getMessage());
+            }
+
             // WEBSOCKET FALLBACK
             messagingTemplate.convertAndSendToUser(userPrincipal.getEmail(), "/topic/updates",
                     "Security Verification Code: " + otp + " (NeoBank Developer Fallback)");
