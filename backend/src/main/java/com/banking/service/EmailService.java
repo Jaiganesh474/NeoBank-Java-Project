@@ -19,6 +19,7 @@ public class EmailService {
                     message, true, "UTF-8");
 
             helper.setTo(to);
+            helper.setFrom("onboarding@resend.dev", "NeoBank");
             helper.setSubject("NeoBank | Verify Your Identity");
 
             String htmlContent = "<html><body style='font-family: Arial, sans-serif; background-color: #f8fafc; padding: 40px;'>"
