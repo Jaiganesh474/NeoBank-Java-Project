@@ -1,9 +1,25 @@
 import axios from 'axios';
 
+const getBaseURL = () => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (envUrl) {
+    // Remove trailing slash if exists
+    const cleanUrl = envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+    // If it already contains /api, use it as is
+    const finalUrl = cleanUrl.includes('/api') ? cleanUrl : `${cleanUrl}/api`;
+    console.log("API: Initializing with Base URL:", finalUrl);
+    return finalUrl;
+  }
+
+  if (import.meta.env.PROD) {
+    return '/api';
+  }
+
+  return 'http://localhost:8080/api';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL
-    ? (import.meta.env.VITE_API_BASE_URL.endsWith('/api') ? import.meta.env.VITE_API_BASE_URL : `${import.meta.env.VITE_API_BASE_URL}/api`)
-    : (import.meta.env.PROD ? '/api' : 'http://localhost:8080/api'),
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
