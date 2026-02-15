@@ -1,5 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -7,11 +6,11 @@ import Dashboard from './pages/Dashboard';
 import Transfer from './pages/Transfer';
 import OpenAccount from './pages/OpenAccount';
 import ProtectedRoute from './components/ProtectedRoute';
+
 import AdminDashboard from './pages/AdminDashboard';
 import AiAssistant from './pages/AiAssistant';
 import ForgotPassword from './pages/ForgotPassword';
-import { firebaseLogin } from './services/auth.service';
-import { handleRedirectResult } from './firebase';
+import { useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 import SessionExpiredModal from './components/SessionExpiredModal';
@@ -25,11 +24,9 @@ function App() {
   return (
     <Router>
       <ToastContainer position="top-right" autoClose={5000} theme="colored" />
-      <AuthRedirectHandler />
       <SessionExpiredHandler />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/index.html" element={<Navigate to="/" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -62,36 +59,11 @@ function App() {
   );
 }
 
-// Global handler for Firebase Auth Redirect results
-const AuthRedirectHandler = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    const handleRedirect = async () => {
-      // Only process redirect results if we are on a page where it might happen
-      // or if there's a specific query param Firebase adds
-      if (location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/' || location.pathname === '/index.html') {
-        try {
-          const idToken = await handleRedirectResult();
-          if (idToken) {
-            const user = await firebaseLogin(idToken);
-            if (user && user.roles && user.roles.includes('ROLE_ADMIN')) {
-              navigate('/admin');
-            } else if (user) {
-              navigate('/dashboard');
-            }
-          }
-        } catch (error) {
-          console.error("Auth redirect processing failed", error);
-        }
-      }
-    };
-    handleRedirect();
-  }, [location.pathname, navigate]);
-
-  return null;
-};
+// Helper component to use hooks inside Router context if needed, 
+// though for this specific case window.location is fine. 
+// But keeps App.jsx clean. 
+// Actually, I'll just inline the logic in a small component or directly in App if I import hooks.
+// Let's create a small inner component for clarity and hook usage possibility.
 
 const SessionExpiredHandler = () => {
   const [sessionExpired, setSessionExpired] = useState(false);

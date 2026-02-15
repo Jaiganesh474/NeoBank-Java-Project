@@ -4,7 +4,7 @@ import { register, firebaseLogin, verifyRegistration, resendOtp } from '../servi
 import { motion, AnimatePresence } from 'framer-motion';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUser, FaEnvelope, FaLock, FaKey, FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
-import { signInWithGoogleRedirect } from '../firebase';
+import { signInWithGoogleRedirect, handleRedirectResult } from '../firebase';
 import './Auth.css';
 
 const Register = () => {
@@ -20,6 +20,24 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const checkRedirect = async () => {
+            try {
+                const idToken = await handleRedirectResult();
+                if (idToken) {
+                    setLoading(true);
+                    await firebaseLogin(idToken);
+                    navigate('/dashboard');
+                }
+            } catch (err) {
+                console.error("Redirect check failed", err);
+                setError('Google sign-up failed. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        checkRedirect();
+    }, [navigate]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
