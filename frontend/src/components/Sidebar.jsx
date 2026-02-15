@@ -34,10 +34,10 @@ const Sidebar = ({ isOpen, toggleMenu, user, theme, toggleTheme, handleLogout })
                             </button>
                         </div>
 
-                        <div className="sidebar-content-scroll" style={{ flex: 1, overflowY: 'auto', paddingRight: '5px' }}>
+                        <div className="sidebar-content-scroll">
                             {user ? (
                                 <>
-                                    <div style={{ marginBottom: '2.5rem' }}>
+                                    <div className="nav-section">
                                         <h5 className="sidebar-section-title">Navigation</h5>
                                         <div className="sidebar-links-group">
                                             <Link to="/dashboard" className="sidebar-link" onClick={toggleMenu}>
@@ -57,7 +57,7 @@ const Sidebar = ({ isOpen, toggleMenu, user, theme, toggleTheme, handleLogout })
                                         </div>
                                     </div>
 
-                                    <div style={{ marginBottom: '1.5rem' }}>
+                                    <div className="account-section">
                                         <h5 className="sidebar-section-title">Account Details</h5>
                                         <div className="sidebar-profile-card">
                                             <div className="profile-card-header">
@@ -105,10 +105,8 @@ const Sidebar = ({ isOpen, toggleMenu, user, theme, toggleTheme, handleLogout })
                             )}
                         </div>
 
-                        <div className="sidebar-footer" style={{ marginTop: 'auto', padding: '1rem 0', textAlign: 'center' }}>
-                            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0 }}>
-                                NeoBank Premium Banking v2.0
-                            </p>
+                        <div className="sidebar-footer">
+                            <p>NeoBank Premium Banking v2.0</p>
                         </div>
                     </motion.div>
                 </>
