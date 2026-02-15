@@ -1,7 +1,7 @@
 import api from './api';
 
 const getCard = () => {
-    return api.get('/cards');
+    return api.get('cards');
 };
 
 const sendOtp = () => {
@@ -13,15 +13,15 @@ const issueCard = (otp) => {
 };
 
 const updatePin = (cardId, pin, otp) => {
-    return api.post(`/cards/${cardId}/pin`, { pin, otp });
+    return api.post(`cards/${cardId}/pin`, { pin, otp });
 };
 
 const unlinkCard = (cardId, otp) => {
-    return api.post(`/cards/${cardId}/unlink?otp=${otp}`);
+    return api.post(`cards/${cardId}/unlink?otp=${otp}`);
 };
 
 const deleteCard = (cardId, otp) => {
-    return api.delete(`/cards/${cardId}?otp=${otp}`);
+    return api.delete(`cards/${cardId}?otp=${otp}`);
 };
 
 const CardService = {

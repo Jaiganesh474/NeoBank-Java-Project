@@ -1,7 +1,7 @@
 import api from './api';
 
 export const login = async (email, password) => {
-    const response = await api.post('/auth/signin', { email, password });
+    const response = await api.post('auth/signin', { email, password });
     if (response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
         localStorage.setItem('user', JSON.stringify({
@@ -20,7 +20,7 @@ export const login = async (email, password) => {
 };
 
 export const loginByPin = async (identifier, pin) => {
-    const response = await api.post('/auth/signin-pin', { identifier, pin });
+    const response = await api.post('auth/signin-pin', { identifier, pin });
     if (response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
         localStorage.setItem('user', JSON.stringify({
@@ -39,12 +39,12 @@ export const loginByPin = async (identifier, pin) => {
 };
 
 export const requestLoginOtp = async (phoneNumber) => {
-    const response = await api.post('/auth/login-otp', { phoneNumber });
+    const response = await api.post('auth/login-otp', { phoneNumber });
     return response.data;
 };
 
 export const loginByOtp = async (phoneNumber, otp) => {
-    const response = await api.post('/auth/signin-otp', { phoneNumber, otp });
+    const response = await api.post('auth/signin-otp', { phoneNumber, otp });
     if (response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
         localStorage.setItem('user', JSON.stringify({
@@ -63,7 +63,7 @@ export const loginByOtp = async (phoneNumber, otp) => {
 };
 
 export const firebaseLogin = async (idToken) => {
-    const response = await api.post('/auth/firebase-signin', { idToken });
+    const response = await api.post('auth/firebase-signin', { idToken });
     if (response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
         localStorage.setItem('user', JSON.stringify({
@@ -82,7 +82,7 @@ export const firebaseLogin = async (idToken) => {
 };
 
 export const register = async (firstName, lastName, email, password) => {
-    const response = await api.post('/auth/signup', {
+    const response = await api.post('auth/signup', {
         firstName,
         lastName,
         email,
@@ -103,37 +103,37 @@ export const getCurrentUser = () => {
 };
 
 export const forgotPassword = async (email) => {
-    const response = await api.post('/auth/forgot-password', { email });
+    const response = await api.post('auth/forgot-password', { email });
     return response.data;
 };
 
 export const resetPassword = async (email, otp, newPassword) => {
-    const response = await api.post('/auth/reset-password', { email, otp, newPassword });
+    const response = await api.post('auth/reset-password', { email, otp, newPassword });
     return response.data;
 };
 
 export const forgotPin = async (identifier) => {
-    const response = await api.post('/auth/forgot-pin', { identifier });
+    const response = await api.post('auth/forgot-pin', { identifier });
     return response.data;
 };
 
 export const resetPin = async (identifier, otp, newPin) => {
-    const response = await api.post('/auth/reset-pin', { identifier, otp, newPin });
+    const response = await api.post('auth/reset-pin', { identifier, otp, newPin });
     return response.data;
 };
 
 export const verifyRegistration = async (email, otp) => {
-    const response = await api.post('/auth/verify-registration', { email, otp });
+    const response = await api.post('auth/verify-registration', { email, otp });
     return response.data;
 };
 
 export const resendOtp = async (email) => {
-    const response = await api.post('/auth/resend-otp', { email });
+    const response = await api.post('auth/resend-otp', { email });
     return response.data;
 };
 
 export const fetchCurrentUser = async () => {
-    const response = await api.get('/auth/me');
+    const response = await api.get('auth/me');
     if (response.data.id) {
         localStorage.setItem('user', JSON.stringify({
             id: response.data.id,
