@@ -1,10 +1,118 @@
-/* Settings Mobile Overrides */
+/* Settings Premium UI Enhancements */
 .settings-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 6rem;
+    padding: 3rem 1.5rem 6rem;
+    animation: fadeIn 0.5s ease-out;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Glass-like Sidebar Navigation */
+.settings-sidebar {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: 24px;
+    padding: 1rem;
+    height: fit-content;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn:hover {
+    background: rgba(var(--primary-rgb), 0.05);
+    transform: translateX(5px);
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.25);
+}
+
+/* Premium Card Design */
+.settings-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: 32px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.03);
+}
+
+.settings-section-title {
+    font-size: 1.5rem;
+    font-weight: 850;
+    margin-bottom: 2rem;
+    letter-spacing: -0.5px;
+}
+
+/* Input Styles */
+.settings-grid {
+    display: grid;
+    gap: 1.75rem;
+}
+
+.input-label {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.premium-input {
+    border-radius: 16px !important;
+    border: 1.5px solid var(--surface-border) !important;
+    padding: 1rem 1.25rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.premium-input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1) !important;
+}
+
+/* Profile Section Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.profile-avatar-section img {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    object-fit: cover;
+    border: 4px solid var(--surface);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Overrides (Legacy Support & Enhancements) */
 @media (max-width: 992px) {
     .settings-layout {
         flex-direction: column !important;
@@ -15,24 +123,38 @@
         width: 100% !important;
         flex-direction: row !important;
         overflow-x: auto !important;
-        padding: 0.5rem !important;
+        padding: 0.75rem !important;
         white-space: nowrap !important;
+        border-radius: 20px;
+        background: var(--surface);
+        scrollbar-width: none;
+    }
+
+    .settings-sidebar::-webkit-scrollbar {
+        display: none;
     }
 
     .tab-btn {
         flex: 0 0 auto !important;
-        padding: 0.8rem 1.2rem !important;
+        width: auto !important;
+        margin-bottom: 0 !important;
+        margin-right: 0.5rem;
+        padding: 0.8rem 1.4rem !important;
+    }
+
+    .tab-btn:hover {
+        transform: none;
     }
 }
 
 @media (max-width: 640px) {
     .settings-container {
-        padding: 1rem 1rem 5rem;
+        padding: 1.5rem 1rem 6rem;
     }
 
     .settings-card {
-        padding: 1.5rem !important;
-        border-radius: 24px !important;
+        padding: 1.75rem !important;
+        border-radius: 28px !important;
     }
 
     .profile-header {
@@ -47,20 +169,7 @@
 
     .settings-grid {
         grid-template-columns: 1fr !important;
-        gap: 1.25rem !important;
-    }
-
-    .premium-input {
-        padding: 0.75rem 1rem !important;
-        font-size: 16px !important;
-        /* Prevents iOS zoom */
-        height: auto !important;
-    }
-
-    /* Override for the OTP input which has a large fixed height */
-    input[placeholder="000000"] {
-        height: 60px !important;
-        font-size: 1.5rem !important;
+        gap: 1.5rem !important;
     }
 
     .settings-actions {
@@ -70,6 +179,15 @@
 
     .btn-premium {
         width: 100% !important;
-        padding: 1rem !important;
+        padding: 1.2rem !important;
+        font-size: 1rem !important;
+        border-radius: 18px !important;
+    }
+
+    input[placeholder="000000"] {
+        height: 65px !important;
+        font-size: 1.75rem !important;
+        letter-spacing: 0.5rem !important;
+        border-radius: 20px !important;
     }
 }

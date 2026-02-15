@@ -8,7 +8,8 @@ import { FaWallet, FaArrowLeft, FaEye, FaEyeSlash, FaCalendarAlt, FaHistory, FaA
 import { toast } from 'react-toastify';
 import webSocketService from '../services/websocket.service';
 import { getCurrentUser } from '../services/auth.service';
-import './Dashboard.css'; // Reuse dashboard styles for consistency
+import './Dashboard.css';
+import './AccountDetails.css';
 
 const AccountDetails = () => {
     const { id } = useParams();
@@ -71,11 +72,11 @@ const AccountDetails = () => {
     if (!account) return null;
 
     return (
-        <div className="dashboard-container">
+        <div className="dashboard-container account-details-container">
             <Navbar />
 
-            <main className="dashboard-content">
-                <header className="dashboard-header" style={{ marginBottom: '2rem' }}>
+            <main className="dashboard-content account-details-main">
+                <header className="dashboard-header account-details-header" style={{ marginBottom: '2rem' }}>
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                         <button
                             onClick={() => navigate('/dashboard')}
@@ -89,10 +90,10 @@ const AccountDetails = () => {
                     </motion.div>
                 </header>
 
-                <div className="dashboard-grid">
+                <div className="dashboard-grid account-details-grid">
                     {/* Primary Info Card */}
-                    <div className="glass-panel stat-card-total" style={{ gridColumn: 'span 6', minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                        <div>
+                    <div className="glass-panel stat-card-total primary-info-card" style={{ gridColumn: 'span 6', minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div className="balance-display">
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                 <span className="stat-label">Available Balance</span>
                                 <button
@@ -131,7 +132,7 @@ const AccountDetails = () => {
                             </h2>
                         </div>
 
-                        <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '16px', padding: '1.2rem', marginTop: '1.5rem' }}>
+                        <div className="acc-number-row" style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '16px', padding: '1.2rem', marginTop: '1.5rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.7, letterSpacing: '0.05em' }}>Account Number</span>
@@ -150,13 +151,13 @@ const AccountDetails = () => {
                     </div>
 
                     {/* Secondary Account Info */}
-                    <div className="glass-panel" style={{ gridColumn: 'span 6' }}>
+                    <div className="glass-panel metadata-card" style={{ gridColumn: 'span 6' }}>
                         <div className="panel-header" style={{ marginBottom: '1.5rem' }}>
                             <h3>Account Metadata</h3>
                             <FaIdCard style={{ color: 'var(--primary)' }} />
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                        <div className="metadata-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                             <div className="info-item">
                                 <span style={{ opacity: 0.6, fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                     <FaBuilding /> Branch
@@ -193,7 +194,7 @@ const AccountDetails = () => {
                     </div>
 
                     {/* Transactions for this account */}
-                    <div className="glass-panel" style={{ gridColumn: 'span 12' }}>
+                    <div className="glass-panel transactions-history-card" style={{ gridColumn: 'span 12' }}>
                         <div className="panel-header">
                             <h3>Transaction History</h3>
                             <FaHistory style={{ color: 'var(--primary)' }} />
@@ -201,7 +202,7 @@ const AccountDetails = () => {
 
                         <div className="transaction-list" style={{ marginTop: '1rem' }}>
                             {transactions.length > 0 ? transactions.map(tx => (
-                                <div key={tx.id} className="item-row">
+                                <div key={tx.id} className="item-row transaction-item">
                                     <div className="mini-icon" style={{
                                         width: '45px',
                                         height: '45px',
