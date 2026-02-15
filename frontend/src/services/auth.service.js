@@ -63,20 +63,10 @@ export const loginByOtp = async (phoneNumber, otp) => {
 };
 
 export const firebaseLogin = async (idToken) => {
-    const response = await api.post('/auth/firebase-signin', { idToken });
-    if (response.data.accessToken) {
-        localStorage.setItem('token', response.data.accessToken);
-        localStorage.setItem('user', JSON.stringify({
-            id: response.data.id,
-            email: response.data.email,
-            firstName: response.data.firstName,
-            roles: response.data.roles,
-            lastLogin: response.data.lastLogin,
-            phoneNumber: response.data.phoneNumber,
-            profileImageUrl: response.data.profileImageUrl,
-            tpinSet: response.data.tpinSet,
-            loginPinSet: response.data.loginPinSet
-        }));
+    localStorage.setItem('token', idToken);
+    const response = await api.get('/auth/me'); // This will trigger the backend sync
+    if (response.data) {
+        localStorage.setItem('user', JSON.stringify(response.data));
     }
     return response.data;
 };
