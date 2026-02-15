@@ -49,7 +49,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/index.html", "/static/**", "/*.js", "/*.css", "/*.png", "/*.svg",
                                 "/assets/**", "/uploads/**", "/vite.svg")
                         .permitAll()
-                        .requestMatchers("/api/auth/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                        .requestMatchers("/api/auth/**", "/api/health/**", "/api-docs/**", "/swagger-ui/**",
+                                "/swagger-ui.html")
                         .permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

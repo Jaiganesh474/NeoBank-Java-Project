@@ -29,12 +29,14 @@ public class FirebaseConfig {
 
                 if (FirebaseApp.getApps().isEmpty()) {
                     FirebaseApp.initializeApp(options);
+                    System.out.println("Firebase initialized successfully using config: " + firebaseConfig);
                 }
             } else {
-                System.err.println("Firebase config file not found at: " + firebaseConfig);
+                System.err.println("CRITICAL: Firebase config file NOT FOUND at: " + firebaseConfig);
+                System.err.println("Please check your firebase.config.path environment variable.");
             }
         } catch (IOException e) {
-            System.err.println("Error initializing Firebase: " + e.getMessage());
+            System.err.println("CRITICAL ERROR during Firebase initialization: " + e.getMessage());
         }
     }
 }
