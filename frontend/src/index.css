@@ -172,6 +172,13 @@ h3 {
   color: #1e293b;
 }
 
+@media (max-width: 640px) {
+  .modal-content {
+    padding: 1.5rem;
+    border-radius: 24px;
+  }
+}
+
 .premium-input {
   width: 100%;
   padding: 1rem;

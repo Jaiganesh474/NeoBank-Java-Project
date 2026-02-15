@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaFacebook, FaTwitter, FaLinkedin, FaGithub, FaShieldAlt } from 'react-icons/fa';
+import Logo from './Logo';
 import './Footer.css';
 
 const Footer = () => {
@@ -10,7 +11,7 @@ const Footer = () => {
             <div className="footer-content">
                 <div className="footer-brand">
                     <div className="footer-logo">
-                        <FaShieldAlt className="logo-icon" />
+                        <Logo size={28} className="logo-icon" />
                         <span>NeoBank</span>
                     </div>
                     <p>The next generation of intelligent, premium digital banking for the modern world.</p>

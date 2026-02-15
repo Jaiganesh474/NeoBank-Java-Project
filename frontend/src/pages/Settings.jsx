@@ -8,6 +8,7 @@ import CardService from '../services/card.service';
 import { FaUser, FaLock, FaBell, FaShieldAlt, FaTrash, FaTimes, FaKey, FaCreditCard, FaShieldVirus, FaEye, FaEyeSlash, FaPalette, FaHistory, FaGlobe, FaDesktop } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import './Settings.css';
 
 const Settings = () => {
     const user = getCurrentUser();

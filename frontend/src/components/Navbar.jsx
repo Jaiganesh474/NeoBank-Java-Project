@@ -5,6 +5,7 @@ import { FaBars, FaTimes, FaUniversity, FaMoon, FaSun, FaRobot, FaSignOutAlt, Fa
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from './Sidebar';
 import LogoutModal from './LogoutModal';
+import Logo from './Logo';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -77,7 +78,7 @@ const Navbar = () => {
                     </div>
                     <div className="navbar-brand">
                         <Link to="/" onClick={() => setIsOpen(false)}>
-                            <FaUniversity className="brand-icon" />
+                            <Logo size={28} className="brand-icon" />
                             <span className="brand-text">NeoBank</span>
                         </Link>
                     </div>

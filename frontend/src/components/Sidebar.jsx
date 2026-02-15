@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaRobot, FaCog, FaSignOutAlt, FaMoon, FaSun, FaArrowRight, FaHome, FaExchangeAlt, FaShieldAlt } from 'react-icons/fa';
+import Logo from './Logo';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, toggleMenu, user, theme, toggleTheme, handleLogout }) => {
@@ -24,7 +25,10 @@ const Sidebar = ({ isOpen, toggleMenu, user, theme, toggleTheme, handleLogout })
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                     >
                         <div className="sidebar-header">
-                            <span className="brand-text">NeoBank</span>
+                            <div className="sidebar-brand-wrapper">
+                                <Logo size={32} />
+                                <span className="brand-text">NeoBank</span>
+                            </div>
                             <button onClick={toggleMenu} className="close-btn" aria-label="Close menu">
                                 <FaTimes />
                             </button>
