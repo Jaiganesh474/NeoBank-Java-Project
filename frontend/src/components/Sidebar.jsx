@@ -6,6 +6,18 @@ import Logo from './Logo';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, toggleMenu, user, theme, toggleTheme, handleLogout }) => {
+    // Prevent background scroll when sidebar is open
+    React.useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
     return (
         <AnimatePresence>
             {isOpen && (
