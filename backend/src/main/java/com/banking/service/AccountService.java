@@ -179,7 +179,10 @@ public class AccountService {
                     fromAccount.getUser().getFirstName(),
                     request.getAmount().toString(),
                     toAccount.getUser().getFirstName() + " " + toAccount.getUser().getLastName(),
-                    savedTransaction.getTransactionId());
+                    savedTransaction.getTransactionId(),
+                    fromAccount.getAccountNumber(),
+                    toAccount.getAccountNumber(),
+                    fromAccount.getBalance().toString());
         }
 
         if (toAccount.getUser().getEmailNotifications()) {
@@ -188,7 +191,10 @@ public class AccountService {
                     toAccount.getUser().getFirstName(),
                     request.getAmount().toString(),
                     fromAccount.getUser().getFirstName() + " " + fromAccount.getUser().getLastName(),
-                    creditTransaction.getTransactionId());
+                    creditTransaction.getTransactionId(),
+                    toAccount.getAccountNumber(),
+                    fromAccount.getAccountNumber(),
+                    toAccount.getBalance().toString());
         }
 
         return savedTransaction;

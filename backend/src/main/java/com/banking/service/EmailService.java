@@ -19,38 +19,44 @@ public class EmailService {
 
     @Async
     public void sendDebitNotification(String to, String firstName, String amount, String recipient,
-            String transactionId) {
+            String transactionId, String userAcc, String partnerAcc, String balance) {
         System.out.println("SMTP: Preparing debit notification for " + to);
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
-            // Use multipart=false for pure HTML emails to improve deliverability
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
                     message, false, "UTF-8");
 
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Alerts");
-            helper.setSubject("Transaction Alert: Debit [₹" + amount + "]");
+            helper.setSubject("Transaction Alert: Debited ₹" + amount);
+
+            String maskedUser = maskAccountNumber(userAcc);
+            String maskedPartner = maskAccountNumber(partnerAcc);
 
             String htmlContent = "<html><body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
                     +
                     "<div style='max-width: 600px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
                     +
                     "<div style='background: #ef4444; padding: 40px; text-align: center;'>" +
-                    "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Money Sent</h1>" +
+                    "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Amount Debited from your account ending with " + maskedUser + "</h1>" +
                     "</div>" +
                     "<div style='padding: 40px;'>" +
                     "<p style='color: #64748b; font-size: 16px; margin-top: 0;'>Hi " + firstName + ",</p>" +
-                    "<p style='color: #1e293b; font-size: 18px; line-height: 1.6;'>This is to inform you that a debit transaction occurred from your NeoBank account.</p>"
+                    "<p style='color: #1e293b; font-size: 16px; line-height: 1.6;'>Your NeoBank account <strong>"
+                    + maskedUser + "</strong> has been <strong>debited</strong> for a transfer to " + recipient
+                    + ".</p>"
                     +
                     "<div style='background: #f8fafc; border-radius: 16px; padding: 24px; margin: 30px 0; border: 1px solid #e2e8f0;'>"
                     +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount</span> <span style='color: #ef4444; font-weight: 700; font-size: 18px;'>-₹"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount </span> <span style='color: #ef4444; font-weight: 700; font-size: 18px;'> ₹"
                     + amount + "</span></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>To</span> <strong style='color: #1e293b;'>"
-                    + recipient + "</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID</span> <code style='color: #475569;'>"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>To Account</span> <strong style='color: #1e293b;'>"
+                    + recipient + " (" + maskedPartner + ")</strong></div>" +
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance</span> <strong style='color: #1e293b; font-size: 16px;'>₹"
+                    + balance + "</strong></div>" +
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID </span> <code style='color: #475569;'>"
                     + transactionId + "</code></div>" +
-                    "<div style='display: flex; justify-content: space-between; font-size: 14px; color: #64748b;'><span>Time</span> <span style='color: #1e293b;'>"
+                    "<div style='display: flex; justify-content: space-between; font-size: 14px; color: #64748b;'><span>Time </span> <span style='color: #1e293b;'>"
                     + java.time.LocalDateTime.now()
                             .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"))
                     + "</span></div>" +
@@ -58,7 +64,7 @@ public class EmailService {
                     "<p style='color: #64748b; font-size: 14px; line-height: 1.6;'>If this wasn't you, please lock your account immediately from the security settings or contact our support team.</p>"
                     +
                     "<div style='text-align: center; margin-top: 40px;'>" +
-                    "<a href='#' style='background: #1e293b; color: white; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 15px;'>Support Center</a>"
+                    "<a href='https://neobank-v8jw.onrender.com/' style='background: #1e293b; color: white; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 15px;'>Support Center</a>"
                     +
                     "</div>" +
                     "</div>" +
@@ -74,13 +80,12 @@ public class EmailService {
             System.out.println("SMTP: Debit notification successfully delivered to relay for " + to);
         } catch (Exception e) {
             System.err.println("SMTP ERROR: Failed to send debit notification to " + to + ": " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
     @Async
     public void sendCreditNotification(String to, String firstName, String amount, String sender,
-            String transactionId) {
+            String transactionId, String userAcc, String partnerAcc, String balance) {
         System.out.println("SMTP: Preparing credit notification for " + to);
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
@@ -89,28 +94,34 @@ public class EmailService {
 
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Alerts");
-            helper.setSubject("Transaction Alert: Credit [₹" + amount + "]");
+            helper.setSubject("Transaction Alert: Credited ₹" + amount);
+
+            String maskedUser = maskAccountNumber(userAcc);
+            String maskedPartner = maskAccountNumber(partnerAcc);
 
             String htmlContent = "<html><body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
                     +
                     "<div style='max-width: 600px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
                     +
                     "<div style='background: #10b981; padding: 40px; text-align: center;'>" +
-                    "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Money Received</h1>" +
+                    "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Money Credited</h1>" +
                     "</div>" +
                     "<div style='padding: 40px;'>" +
                     "<p style='color: #64748b; font-size: 16px; margin-top: 0;'>Hi " + firstName + ",</p>" +
-                    "<p style='color: #1e293b; font-size: 18px; line-height: 1.6;'>Great news! You have received a credit to your NeoBank account.</p>"
+                    "<p style='color: #1e293b; font-size: 16px; line-height: 1.6;'>Great news! Your NeoBank account <strong>"
+                    + maskedUser + "</strong> has been <strong>credited</strong> with money from " + sender + ".</p>"
                     +
                     "<div style='background: #f8fafc; border-radius: 16px; padding: 24px; margin: 30px 0; border: 1px solid #e2e8f0;'>"
                     +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount</span> <span style='color: #10b981; font-weight: 700; font-size: 18px;'>+₹"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount </span> <span style='color: #10b981; font-weight: 700; font-size: 18px;'> ₹"
                     + amount + "</span></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>From</span> <strong style='color: #1e293b;'>"
-                    + sender + "</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID</span> <code style='color: #475569;'>"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>From Account</span> <strong style='color: #1e293b;'>"
+                    + sender + " (" + maskedPartner + ")</strong></div>" +
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance</span> <strong style='color: #1e293b; font-size: 16px;'>₹"
+                    + balance + "</strong></div>" +
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID </span> <code style='color: #475569;'>"
                     + transactionId + "</code></div>" +
-                    "<div style='display: flex; justify-content: space-between; font-size: 14px; color: #64748b;'><span>Time</span> <span style='color: #1e293b;'>"
+                    "<div style='display: flex; justify-content: space-between; font-size: 14px; color: #64748b;'><span>Time </span> <span style='color: #1e293b;'>"
                     + java.time.LocalDateTime.now()
                             .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"))
                     + "</span></div>" +
@@ -118,7 +129,7 @@ public class EmailService {
                     "<p style='color: #64748b; font-size: 14px; line-height: 1.6;'>The amount is now available in your balance.</p>"
                     +
                     "<div style='text-align: center; margin-top: 40px;'>" +
-                    "<a href='#' style='background: #10b981; color: white; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 15px;'>Go to Dashboard</a>"
+                    "<a href='https://neobank-v8jw.onrender.com/dashboard' style='background: #10b981; color: white; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 15px;'>Go to Dashboard</a>"
                     +
                     "</div>" +
                     "</div>" +
@@ -134,8 +145,13 @@ public class EmailService {
             System.out.println("SMTP: Credit notification successfully delivered to relay for " + to);
         } catch (Exception e) {
             System.err.println("SMTP ERROR: Failed to send credit notification to " + to + ": " + e.getMessage());
-            e.printStackTrace();
         }
+    }
+
+    private String maskAccountNumber(String accountNumber) {
+        if (accountNumber == null || accountNumber.length() < 4)
+            return "****";
+        return "XXXX" + accountNumber.substring(accountNumber.length() - 4);
     }
 
     public void sendOtpEmail(String to, String otp) {
