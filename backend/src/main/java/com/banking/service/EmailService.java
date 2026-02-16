@@ -26,12 +26,14 @@ public class EmailService {
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
                     message, false, "UTF-8");
 
-            helper.setTo(to);
-            helper.setFrom(fromEmail, "NeoBank Alerts");
-            helper.setSubject("Transaction Alert: Debited ₹" + amount);
-
             String maskedUser = maskAccountNumber(userAcc);
             String maskedPartner = maskAccountNumber(partnerAcc);
+
+            helper.setTo(to);
+            helper.setFrom(fromEmail, "NeoBank Alerts");
+            helper.setSubject("Debit Alert: from NeoBank (A/c:" + maskedUser + ")");
+
+            
 
             String htmlContent = "<html><body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
                     +
@@ -41,18 +43,18 @@ public class EmailService {
                     "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Amount Debited from your account ending with " + maskedUser + "</h1>" +
                     "</div>" +
                     "<div style='padding: 40px;'>" +
-                    "<p style='color: #64748b; font-size: 16px; margin-top: 0;'>Hi " + firstName + ",</p>" +
+                    "<p style='color: #64748b; font-size: 16px; margin-top: 0;'>Dear " + firstName + ",</p>" +
                     "<p style='color: #1e293b; font-size: 16px; line-height: 1.6;'>Your NeoBank account <strong>"
-                    + maskedUser + "</strong> has been <strong>debited</strong> for a transfer to " + recipient
+                    + maskedUser + "</strong> has been <strong>debited</strong> for a transfer to a account linked to " + recipient
                     + ".</p>"
                     +
                     "<div style='background: #f8fafc; border-radius: 16px; padding: 24px; margin: 30px 0; border: 1px solid #e2e8f0;'>"
                     +
                     "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount </span> <span style='color: #ef4444; font-weight: 700; font-size: 18px;'> ₹"
                     + amount + "</span></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>To Account</span> <strong style='color: #1e293b;'>"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>To Account </span> <strong style='color: #1e293b;'>"
                     + recipient + " (" + maskedPartner + ")</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance</span> <strong style='color: #1e293b; font-size: 16px;'>₹"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance </span> <strong style='color: #1e293b; font-size: 16px;'>₹"
                     + balance + "</strong></div>" +
                     "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID </span> <code style='color: #475569;'>"
                     + transactionId + "</code></div>" +
@@ -91,20 +93,19 @@ public class EmailService {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
                     message, false, "UTF-8");
-
-            helper.setTo(to);
-            helper.setFrom(fromEmail, "NeoBank Alerts");
-            helper.setSubject("Transaction Alert: Credited ₹" + amount);
-
+            
             String maskedUser = maskAccountNumber(userAcc);
             String maskedPartner = maskAccountNumber(partnerAcc);
+            helper.setTo(to);
+            helper.setFrom(fromEmail, "NeoBank Alerts");
+            helper.setSubject("Credit Alert: from NeoBank (A/c:" + maskedUser + ")");
 
             String htmlContent = "<html><body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
                     +
                     "<div style='max-width: 600px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
                     +
                     "<div style='background: #10b981; padding: 40px; text-align: center;'>" +
-                    "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Money Credited</h1>" +
+                    "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Amount Credited to your account ending with " + maskedUser + "</h1>" +
                     "</div>" +
                     "<div style='padding: 40px;'>" +
                     "<p style='color: #64748b; font-size: 16px; margin-top: 0;'>Hi " + firstName + ",</p>" +
@@ -115,9 +116,9 @@ public class EmailService {
                     +
                     "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount </span> <span style='color: #10b981; font-weight: 700; font-size: 18px;'> ₹"
                     + amount + "</span></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>From Account</span> <strong style='color: #1e293b;'>"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>From Account </span> <strong style='color: #1e293b;'>"
                     + sender + " (" + maskedPartner + ")</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance</span> <strong style='color: #1e293b; font-size: 16px;'>₹"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance </span> <strong style='color: #1e293b; font-size: 16px;'>₹"
                     + balance + "</strong></div>" +
                     "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID </span> <code style='color: #475569;'>"
                     + transactionId + "</code></div>" +
