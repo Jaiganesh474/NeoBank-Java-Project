@@ -243,6 +243,79 @@
     color: var(--primary);
 }
 
+/* Premium Banner for OTP Sent */
+.success-message-banner {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Premium Resend Button */
+.resend-container {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.resend-btn-premium {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.resend-btn-premium:hover:not(:disabled) {
+    background: rgba(37, 99, 235, 0.05);
+    /* Using primary color with alpha */
+    transform: scale(1.02);
+}
+
+.resend-btn-premium:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 @media (max-width: 640px) {
     .auth-container {
         padding: 1rem;

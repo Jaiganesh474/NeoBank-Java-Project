@@ -339,6 +339,17 @@ public class AuthController {
                 }
         }
 
+        @PostMapping("/verify-otp")
+        public ResponseEntity<?> verifyOtp(@Valid @RequestBody com.banking.payload.VerifyOtpRequest request) {
+                try {
+                        customAuthService.verifyOtpOnly(request.getIdentifier(), request.getOtp(), request.isPinMode());
+                        return ResponseEntity.ok(new ApiResponse(true, "OTP verified successfully."));
+                } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                        .body(new ApiResponse(false, e.getMessage()));
+                }
+        }
+
         @PostMapping("/resend-otp")
         public ResponseEntity<?> resendOtp(@Valid @RequestBody com.banking.payload.ForgotPasswordRequest request) {
                 try {

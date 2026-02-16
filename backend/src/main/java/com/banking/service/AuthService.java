@@ -118,6 +118,21 @@ public class AuthService {
         otpTokenRepository.delete(otpToken);
     }
 
+    @Transactional(readOnly = true)
+    public void verifyOtpOnly(String identifier, String otp, boolean isPhone) {
+        String queryId = isPhone ? sanitizePhone(identifier) : identifier;
+        OtpToken otpToken = otpTokenRepository.findByEmail(queryId)
+                .orElseThrow(() -> new RuntimeException("Verification code not found or expired."));
+
+        if (otpToken.isExpired()) {
+            throw new RuntimeException("Verification code has expired. Please request a new one.");
+        }
+
+        if (!otpToken.getOtp().equals(otp.trim())) {
+            throw new RuntimeException("Invalid verification code. Please check and try again.");
+        }
+    }
+
     @Transactional
     public void resendVerificationOtp(String email) {
         User user = userRepository.findByEmail(email)

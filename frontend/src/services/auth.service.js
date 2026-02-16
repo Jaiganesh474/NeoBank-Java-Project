@@ -112,6 +112,11 @@ export const resetPassword = async (email, otp, newPassword) => {
     return response.data;
 };
 
+export const verifyResetOtp = async (identifier, otp, isPinMode) => {
+    const response = await api.post('auth/verify-otp', { identifier, otp, isPinMode });
+    return response.data;
+};
+
 export const forgotPin = async (identifier) => {
     const response = await api.post('auth/forgot-pin', { identifier });
     return response.data;

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { forgotPassword, resetPassword, forgotPin, resetPin } from '../services/auth.service';
+import { forgotPassword, resetPassword, forgotPin, resetPin, verifyResetOtp } from '../services/auth.service';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaEnvelope, FaLock, FaKey, FaArrowLeft, FaCheckCircle, FaMobileAlt } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaKey, FaArrowLeft, FaCheckCircle, FaMobileAlt, FaRedoAlt } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import './Auth.css';
 
 const ForgotPassword = () => {
@@ -11,17 +12,18 @@ const ForgotPassword = () => {
     const initialMode = queryParams.get('mode') === 'pin' ? 'pin' : 'password';
 
     const [mode, setMode] = useState(initialMode); // 'password' or 'pin'
-    const [step, setStep] = useState(1); // 1: Identifier, 2: OTP & Reset
+    const [step, setStep] = useState(1); // 1: Identifier, 2: OTP, 3: New Value, 4: Success
     const [identifier, setIdentifier] = useState('');
     const [otp, setOtp] = useState('');
     const [newValue, setNewValue] = useState(''); // newPassword or newPin
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [resending, setResending] = useState(false);
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     const handleIdentifierSubmit = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         setError('');
         setLoading(true);
         try {
@@ -40,6 +42,21 @@ const ForgotPassword = () => {
         }
     };
 
+    const handleVerifyOtp = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+            await verifyResetOtp(identifier, otp, mode === 'pin');
+            setStep(3);
+            setMessage('');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Invalid verification code.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleResetSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -50,11 +67,30 @@ const ForgotPassword = () => {
             } else {
                 await resetPin(identifier, otp, newValue);
             }
-            setStep(3); // 3: Success
+            setStep(4);
         } catch (err) {
-            setError(err.response?.data?.message || 'Invalid code or internal error.');
+            setError(err.response?.data?.message || 'Failed to update. Please start over.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleResend = async () => {
+        if (resending) return;
+        setResending(true);
+        setError('');
+        try {
+            if (mode === 'password') {
+                await forgotPassword(identifier);
+                toast.success('New OTP sent to your email');
+            } else {
+                await forgotPin(identifier);
+                toast.success('New OTP sent to your mobile');
+            }
+        } catch (err) {
+            toast.error('Failed to resend code');
+        } finally {
+            setResending(false);
         }
     };
 
@@ -101,7 +137,7 @@ const ForgotPassword = () => {
                                     />
                                 </div>
                                 {error && <div className="error-message">{error}</div>}
-                                <button type="submit" className="auth-btn" disabled={loading}>
+                                <button type="submit" className="auth-btn primary-btn" disabled={loading}>
                                     {loading ? 'Processing...' : 'Send Verification Code'}
                                 </button>
                             </form>
@@ -116,22 +152,60 @@ const ForgotPassword = () => {
                             exit={{ opacity: 0, x: -20 }}
                         >
                             <div className="auth-header">
-                                <h2>Reset {isPinMode ? 'Secure PIN' : 'Password'}</h2>
-                                <p>Enter the 6-digit OTP and your new {isPinMode ? 'PIN' : 'password'}.</p>
+                                <h2>Verify Code</h2>
+                                <p>Enter the 6-digit OTP sent to your {isPinMode ? 'mobile' : 'email'}.</p>
                             </div>
-                            <form onSubmit={handleResetSubmit}>
+                            <form onSubmit={handleVerifyOtp}>
                                 <div className="input-group">
                                     <FaKey className="input-icon" />
                                     <input
                                         type="text"
-                                        placeholder="6-Digit OTP"
+                                        placeholder="000000"
                                         value={otp}
                                         onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                         required
                                         maxLength="6"
-                                        style={{ letterSpacing: '0.2em', textAlign: 'center' }}
+                                        style={{ letterSpacing: '0.5em', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}
                                     />
                                 </div>
+                                {error && <div className="error-message">{error}</div>}
+                                {message && (
+                                    <div className="success-message-banner">
+                                        {message}
+                                    </div>
+                                )}
+
+                                <button type="submit" className="auth-btn primary-btn" disabled={loading}>
+                                    {loading ? 'Verifying...' : 'Verify Code'}
+                                </button>
+
+                                <div className="resend-container">
+                                    <button
+                                        type="button"
+                                        className="resend-btn-premium"
+                                        onClick={handleResend}
+                                        disabled={resending}
+                                    >
+                                        <FaRedoAlt className={resending ? 'spin' : ''} />
+                                        {resending ? 'Resending...' : "Didn't receive code? Resend"}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    )}
+
+                    {step === 3 && (
+                        <motion.div
+                            key="step3"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                        >
+                            <div className="auth-header">
+                                <h2>Set New {isPinMode ? 'PIN' : 'Password'}</h2>
+                                <p>Verification successful. Choose your new {isPinMode ? '4-digit PIN' : 'secure password'}.</p>
+                            </div>
+                            <form onSubmit={handleResetSubmit}>
                                 <div className="input-group">
                                     <FaLock className="input-icon" />
                                     <input
@@ -146,31 +220,23 @@ const ForgotPassword = () => {
                                             }
                                         }}
                                         required
+                                        autoFocus
                                         minLength={isPinMode ? 4 : 6}
                                         maxLength={isPinMode ? 4 : 50}
-                                        style={isPinMode ? { letterSpacing: '0.5em', textAlign: 'center' } : {}}
+                                        style={isPinMode ? { letterSpacing: '0.5em', textAlign: 'center', fontSize: '1.2rem' } : {}}
                                     />
                                 </div>
                                 {error && <div className="error-message">{error}</div>}
-                                {message && <div className="success-message" style={{ color: 'var(--success)', fontSize: '0.85rem', marginBottom: '1rem', textAlign: 'center' }}>{message}</div>}
-                                <button type="submit" className="auth-btn" disabled={loading}>
+                                <button type="submit" className="auth-btn primary-btn" disabled={loading}>
                                     {loading ? 'Updating...' : `Update ${isPinMode ? 'PIN' : 'Password'}`}
-                                </button>
-                                <button
-                                    type="button"
-                                    className="text-btn"
-                                    style={{ marginTop: '1rem', width: '100%' }}
-                                    onClick={handleIdentifierSubmit}
-                                >
-                                    Resend Verification Code
                                 </button>
                             </form>
                         </motion.div>
                     )}
 
-                    {step === 3 && (
+                    {step === 4 && (
                         <motion.div
-                            key="step3"
+                            key="step4"
                             className="success-view"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -178,7 +244,7 @@ const ForgotPassword = () => {
                             <FaCheckCircle className="success-icon" />
                             <h2>Success!</h2>
                             <p>Your {isPinMode ? 'Login PIN' : 'password'} has been updated successfully.</p>
-                            <Link to="/login" className="auth-link-btn">Go to Login</Link>
+                            <Link to="/login" className="auth-btn primary-btn" style={{ textDecoration: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1.5rem' }}>Go to Login</Link>
                         </motion.div>
                     )}
                 </AnimatePresence>
