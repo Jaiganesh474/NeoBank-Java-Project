@@ -172,30 +172,26 @@ public class AccountService {
                 "/topic/user/" + toAccount.getUser().getId(),
                 receiverNotice);
 
-        // Notify via Email
-        if (fromAccount.getUser().getEmailNotifications()) {
-            emailService.sendDebitNotification(
-                    fromAccount.getUser().getEmail(),
-                    fromAccount.getUser().getFirstName(),
-                    request.getAmount().toString(),
-                    toAccount.getUser().getFirstName() + " " + toAccount.getUser().getLastName(),
-                    savedTransaction.getTransactionId(),
-                    fromAccount.getAccountNumber(),
-                    toAccount.getAccountNumber(),
-                    fromAccount.getBalance().toString());
-        }
+        // Notify via Email (Mandatory for security)
+        emailService.sendDebitNotification(
+                fromAccount.getUser().getEmail(),
+                fromAccount.getUser().getFirstName(),
+                request.getAmount().toString(),
+                toAccount.getUser().getFirstName() + " " + toAccount.getUser().getLastName(),
+                savedTransaction.getTransactionId(),
+                fromAccount.getAccountNumber(),
+                toAccount.getAccountNumber(),
+                fromAccount.getBalance().toString());
 
-        if (toAccount.getUser().getEmailNotifications()) {
-            emailService.sendCreditNotification(
-                    toAccount.getUser().getEmail(),
-                    toAccount.getUser().getFirstName(),
-                    request.getAmount().toString(),
-                    fromAccount.getUser().getFirstName() + " " + fromAccount.getUser().getLastName(),
-                    creditTransaction.getTransactionId(),
-                    toAccount.getAccountNumber(),
-                    fromAccount.getAccountNumber(),
-                    toAccount.getBalance().toString());
-        }
+        emailService.sendCreditNotification(
+                toAccount.getUser().getEmail(),
+                toAccount.getUser().getFirstName(),
+                request.getAmount().toString(),
+                fromAccount.getUser().getFirstName() + " " + fromAccount.getUser().getLastName(),
+                creditTransaction.getTransactionId(),
+                toAccount.getAccountNumber(),
+                fromAccount.getAccountNumber(),
+                toAccount.getBalance().toString());
 
         return savedTransaction;
     }

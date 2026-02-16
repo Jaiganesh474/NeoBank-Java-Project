@@ -52,9 +52,9 @@ public class EmailService {
                     +
                     "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount </span> <span style='color: #ef4444; font-weight: 700; font-size: 18px;'> ₹"
                     + amount + "</span></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>To Account </span> <strong style='color: #1e293b;'>"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>To Account </span> <strong style='color: #1e293b;'> "
                     + recipient + " (" + maskedPartner + ")</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance </span> <strong style='color: #1e293b; font-size: 16px;'>₹"
+                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance </span> <strong style='color: #1e293b; font-size: 16px;'> ₹"
                     + balance + "</strong></div>" +
                     "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID </span> <code style='color: #475569;'>"
                     + transactionId + "</code></div>" +
