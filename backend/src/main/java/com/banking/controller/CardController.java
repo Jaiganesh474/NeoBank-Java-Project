@@ -30,8 +30,8 @@ public class CardController {
     @PostMapping("/send-otp")
     public ResponseEntity<?> sendCardOtp(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         try {
-            authService.generateActionOtp(userPrincipal);
-            return ResponseEntity.ok(new ApiResponse(true, "OTP sent successfully"));
+            authService.generateMobileActionOtp(userPrincipal);
+            return ResponseEntity.ok(new ApiResponse(true, "OTP sent successfully to your mobile number"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
         }

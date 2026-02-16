@@ -211,6 +211,66 @@ public class AuthService {
         }
     }
 
+    @Transactional
+    public String generateMobileActionOtp(UserPrincipal userPrincipal) {
+        String phone = resolvePhoneOnly(userPrincipal);
+        if (phone == null) {
+            throw new RuntimeException("No registered mobile number found for security verification.");
+        }
+
+        String identifier = sanitizePhone(phone);
+        String otp = String.format("%06d", new java.util.Random().nextInt(999999));
+
+        otpTokenRepository.deleteByEmail(identifier);
+        OtpToken otpToken = new OtpToken(identifier, otp, 5);
+        otpTokenRepository.save(otpToken);
+
+        System.out.println("DEBUG: Sending Mobile-Only Action OTP: " + identifier);
+
+        if (!"none".equals(twilioAccountSid) && !twilioAccountSid.startsWith("ACXXX")
+                && !"none".equals(twilioAuthToken)) {
+            try {
+                Message.creator(
+                        new com.twilio.type.PhoneNumber(formatToInternational(identifier)),
+                        new com.twilio.type.PhoneNumber(twilioPhoneNumber),
+                        "NeoBank Authorization: Your code is " + otp + ". Do not share this code.")
+                        .create();
+                System.out.println("SUCCESS: Twilio SMS sent to " + identifier);
+            } catch (Exception e) {
+                System.err.println("CRITICAL: Twilio SMS failed: " + e.getMessage());
+                throw new RuntimeException("Failed to send authorization SMS: " + e.getMessage());
+            }
+        } else {
+            throw new RuntimeException("SMS service is not configured for mobile verification.");
+        }
+
+        // Always log
+        System.out.println("\n================================================");
+        System.out.println("   NEOBANK SECURITY: MOBILE ACTION OTP FOR " + identifier);
+        System.out.println("   YOUR CODE IS: " + otp);
+        System.out.println("================================================\n");
+
+        // WEBSOCKET FALLBACK
+        messagingTemplate.convertAndSendToUser(userPrincipal.getEmail(), "/topic/updates",
+                "Security Verification Code: " + otp + " (NeoBank Developer Fallback)");
+
+        return "MOBILE";
+    }
+
+    public String resolvePhoneOnly(UserPrincipal userPrincipal) {
+        User user = userRepository.findById(userPrincipal.getId()).orElse(null);
+        String phone = (user != null) ? user.getPhoneNumber() : null;
+
+        if (phone == null || phone.trim().isEmpty()) {
+            phone = accountRepository.findByUserId(userPrincipal.getId())
+                    .stream()
+                    .findFirst()
+                    .map(com.banking.model.Account::getPhoneNumber)
+                    .orElse(null);
+        }
+        return (phone != null && !phone.trim().isEmpty()) ? phone : null;
+    }
+
     public String resolvePrimaryContact(UserPrincipal userPrincipal) {
         User user = userRepository.findById(userPrincipal.getId()).orElse(null);
         String phone = (user != null) ? user.getPhoneNumber() : null;
@@ -254,6 +314,15 @@ public class AuthService {
         }
 
         otpTokenRepository.delete(otpToken);
+    }
+
+    @Transactional
+    public void verifyMobileActionOtp(UserPrincipal userPrincipal, String otp) {
+        String phone = resolvePhoneOnly(userPrincipal);
+        if (phone == null) {
+            throw new RuntimeException("No recovery mobile number found for verification.");
+        }
+        verifyPhoneOtp(phone, otp);
     }
 
     @Transactional

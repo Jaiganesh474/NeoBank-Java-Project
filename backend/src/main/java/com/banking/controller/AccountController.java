@@ -81,7 +81,7 @@ public class AccountController {
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable Long id, @RequestParam(required = true) String otp) {
         try {
-            authService.verifyActionOtp(userPrincipal, otp);
+            authService.verifyMobileActionOtp(userPrincipal, otp);
             accountService.deleteAccount(userPrincipal, id);
             return ResponseEntity.ok(new com.banking.payload.ApiResponse(true, "Account deleted successfully"));
         } catch (Exception e) {

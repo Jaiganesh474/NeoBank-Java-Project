@@ -37,7 +37,7 @@ public class CardService {
     @Transactional
     public void updateCardPin(UserPrincipal user, Long cardId, String pin, String otp) {
         // 1. Verify OTP
-        authService.verifyActionOtp(user, otp);
+        authService.verifyMobileActionOtp(user, otp);
 
         // 2. Find Card
         Card card = cardRepository.findById(cardId)
@@ -54,7 +54,7 @@ public class CardService {
 
     @Transactional
     public void deleteCard(UserPrincipal user, Long cardId, String otp) {
-        authService.verifyActionOtp(user, otp);
+        authService.verifyMobileActionOtp(user, otp);
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("Card not found"));
         if (!card.getAccount().getUser().getId().equals(user.getId())) {
@@ -65,7 +65,7 @@ public class CardService {
 
     @Transactional
     public void unlinkCard(UserPrincipal user, Long cardId, String otp) {
-        authService.verifyActionOtp(user, otp);
+        authService.verifyMobileActionOtp(user, otp);
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("Card not found"));
         if (!card.getAccount().getUser().getId().equals(user.getId())) {
@@ -86,7 +86,7 @@ public class CardService {
                 .orElseThrow(() -> new RuntimeException("No active account found. Please open an account first."));
 
         // 2. Verify Security Code
-        authService.verifyActionOtp(user, otp);
+        authService.verifyMobileActionOtp(user, otp);
 
         // 3. Check if card already exists
         if (cardRepository.findByAccountId(account.getId()).isPresent()) {
