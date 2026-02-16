@@ -50,7 +50,8 @@ const Transactions = () => {
     });
 
     const getUserFriendlyType = (type, amount) => {
-        if (type === 'TRANSFER') return amount < 0 ? 'Sent Money' : 'Received Money';
+        if (type === 'TRANSFER') return 'Sent Money';
+        if (type === 'DEPOSIT') return 'Received Money';
         return type ? (type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()) : 'Transaction';
     };
 
@@ -142,7 +143,7 @@ const Transactions = () => {
                             </div>
                         ) : (
                             filteredTransactions.map(tx => {
-                                const isNegative = tx.amount < 0 || (tx.type === 'TRANSFER' && tx.amount < 0) || tx.type === 'WITHDRAWAL' || tx.type === 'PAYMENT';
+                                const isNegative = tx.type === 'TRANSFER' || tx.type === 'WITHDRAWAL' || tx.type === 'PAYMENT';
                                 const amount = Math.abs(tx.amount);
 
                                 return (
@@ -153,10 +154,11 @@ const Transactions = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         whileHover={{ scale: 1.01 }}
                                     >
-                                        <div className="mini-icon" style={{
+                                        <div className="mini-icon mobile-mini-icon" style={{
                                             width: '50px',
                                             height: '50px',
                                             borderRadius: '14px',
+                                            flexShrink: 0,
                                             fontSize: '1.2rem',
                                             background: isNegative ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                             color: isNegative ? 'var(--error)' : 'var(--success)'
@@ -164,17 +166,18 @@ const Transactions = () => {
                                             {isNegative ? <FaArrowUp /> : <FaArrowDown />}
                                         </div>
                                         <div className="item-info">
-                                            <p className="item-title" style={{ fontSize: '1rem' }}>{tx.recipientName || tx.recipient || 'Transaction'}</p>
-                                            <span className="item-subtitle">
+                                            <p className="item-title tx-title-mobile">{tx.recipientName || tx.recipient || 'Transaction'}</p>
+                                            <span className="item-subtitle tx-subtitle-mobile">
                                                 {new Date(tx.createdAt).toLocaleDateString()} at {new Date(tx.createdAt).toLocaleTimeString()} • {getUserFriendlyType(tx.type, tx.amount)}
-                                                {tx.description && <span style={{ marginLeft: '0.5rem', opacity: 0.8 }}>— {tx.description}</span>}
+                                                {tx.description && <span style={{ marginLeft: '0.5rem', opacity: 0.8 }} className="tx-desc-mobile">— {tx.description}</span>}
                                             </span>
-                                            {tx.transactionId && <span className="item-subtitle" style={{ fontSize: '0.75rem', marginTop: '0.2rem', display: 'block' }}>ID: {tx.transactionId}</span>}
+                                            {tx.transactionId && <span className="item-subtitle tx-id-mobile" style={{ fontSize: '0.75rem', marginTop: '0.2rem', display: 'block' }}>ID: {tx.transactionId}</span>}
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
-                                            <p className="item-amount" style={{
+                                            <p className="item-amount tx-amount-mobile" style={{
                                                 color: isNegative ? 'var(--error)' : 'var(--success)',
-                                                fontSize: '1.1rem'
+                                                fontSize: '1.1rem',
+                                                whiteSpace: 'nowrap'
                                             }}>
                                                 {isNegative ? '-' : '+'}₹{amount.toFixed(2)}
                                             </p>
