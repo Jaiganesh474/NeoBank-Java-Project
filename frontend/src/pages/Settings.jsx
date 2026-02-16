@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getCurrentUser, logout, fetchCurrentUser } from '../services/auth.service';
 import UserService from '../services/user.service';
 import CardService from '../services/card.service';
-import { FaUser, FaLock, FaBell, FaShieldAlt, FaTrash, FaTimes, FaKey, FaCreditCard, FaShieldVirus, FaEye, FaEyeSlash, FaPalette, FaHistory, FaGlobe, FaDesktop } from 'react-icons/fa';
+import { FaUser, FaLock, FaBell, FaShieldAlt, FaTrash, FaTimes, FaKey, FaCreditCard, FaShieldVirus, FaEye, FaEyeSlash, FaPalette, FaHistory, FaGlobe, FaDesktop, FaBars, FaChevronRight } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import './Settings.css';
@@ -16,6 +16,14 @@ const Settings = () => {
     const fileInputRef = React.useRef(null);
     const [activeTab, setActiveTab] = useState('profile');
     const [loading, setLoading] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    React.useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Card State
     const [card, setCard] = useState(null);
@@ -488,609 +496,540 @@ const Settings = () => {
         <div className="dashboard-container" style={{ position: 'relative' }}>
             <Navbar />
             <main className="dashboard-content" style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '1.5rem' }}>
-                <header className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                    >
-                        <h1 style={{ fontSize: '2rem', marginBottom: '0.3rem' }}>Settings</h1>
-                        <p style={{ fontSize: '0.95rem' }}>Manage your account preferences and security.</p>
-                    </motion.div>
+                <header className="settings-header-mobile">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <button
+                            className="mobile-sidebar-toggle"
+                            onClick={() => setIsSidebarOpen(true)}
+                        >
+                            <FaBars />
+                        </button>
+                        <div>
+                            <h1 style={{ fontSize: '1.8rem', fontWeight: 800, margin: 0 }}>Settings</h1>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Manage your preferences</p>
+                        </div>
+                    </div>
                     <button
                         className="modal-close-btn"
                         onClick={() => navigate('/dashboard')}
-                        style={{ background: 'var(--input-bg)', border: '1px solid var(--surface-border)', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                     >
                         <FaTimes />
                     </button>
                 </header>
 
-                <div className="glass-panel" style={{ padding: '1.5rem', borderRadius: '24px' }}>
-                    <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-                        {/* Sidebar */}
-                        <div style={{ flex: '0 0 200px', borderRight: '1px solid var(--surface-border)', paddingRight: '1rem' }}>
-                            <ul style={{ listStyle: 'none', padding: 0 }}>
-                                <li
-                                    onClick={() => setActiveTab('profile')}
-                                    style={{
-                                        marginBottom: '0.6rem',
-                                        padding: '0.6rem 1rem',
-                                        borderRadius: '10px',
-                                        background: activeTab === 'profile' ? 'var(--primary-light)' : 'transparent',
-                                        color: activeTab === 'profile' ? 'var(--primary)' : 'var(--text-muted)',
-                                        fontWeight: activeTab === 'profile' ? '700' : '500',
-                                        fontSize: '0.9rem',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                >
-                                    <FaUser style={{ marginRight: '10px' }} /> Profile Info
-                                </li>
-                                <li
-                                    onClick={() => setActiveTab('security')}
-                                    style={{
-                                        marginBottom: '0.6rem',
-                                        padding: '0.6rem 1rem',
-                                        borderRadius: '10px',
-                                        background: activeTab === 'security' ? 'var(--primary-light)' : 'transparent',
-                                        color: activeTab === 'security' ? 'var(--primary)' : 'var(--text-muted)',
-                                        fontWeight: activeTab === 'security' ? '700' : '500',
-                                        fontSize: '0.9rem',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                >
-                                    <FaShieldAlt style={{ marginRight: '10px' }} /> Privacy & Security
-                                </li>
-                                <li
-                                    onClick={() => setActiveTab('pins')}
-                                    style={{
-                                        marginBottom: '0.6rem',
-                                        padding: '0.7rem 1.25rem',
-                                        borderRadius: '12px',
-                                        background: activeTab === 'pins' ? 'var(--primary-light)' : 'transparent',
-                                        color: activeTab === 'pins' ? 'var(--primary)' : 'var(--text-muted)',
-                                        fontWeight: activeTab === 'pins' ? '800' : '500',
-                                        fontSize: '0.9rem',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        transition: 'all 0.3s ease',
-                                        border: activeTab === 'pins' ? '1px solid rgba(var(--primary-rgb), 0.1)' : '1px solid transparent'
-                                    }}
-                                >
-                                    <FaKey style={{ marginRight: '10px' }} />  PINs
-                                </li>
-                                <li
-                                    onClick={() => setActiveTab('cards')}
-                                    style={{
-                                        marginBottom: '0.6rem',
-                                        padding: '0.7rem 1.25rem',
-                                        borderRadius: '12px',
-                                        background: activeTab === 'cards' ? 'var(--primary-light)' : 'transparent',
-                                        color: activeTab === 'cards' ? 'var(--primary)' : 'var(--text-muted)',
-                                        fontWeight: activeTab === 'cards' ? '800' : '500',
-                                        fontSize: '0.9rem',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        transition: 'all 0.3s ease',
-                                        border: activeTab === 'cards' ? '1px solid rgba(var(--primary-rgb), 0.1)' : '1px solid transparent'
-                                    }}
-                                >
-                                    <FaCreditCard style={{ marginRight: '10px' }} /> Cards
-                                </li>
-                                <li
-                                    onClick={() => setActiveTab('preferences')}
-                                    style={{
-                                        marginBottom: '0.6rem',
-                                        padding: '0.7rem 1.25rem',
-                                        borderRadius: '12px',
-                                        background: activeTab === 'preferences' ? 'var(--primary-light)' : 'transparent',
-                                        color: activeTab === 'preferences' ? 'var(--primary)' : 'var(--text-muted)',
-                                        fontWeight: activeTab === 'preferences' ? '800' : '500',
-                                        fontSize: '0.9rem',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        transition: 'all 0.3s ease',
-                                        border: activeTab === 'preferences' ? '1px solid rgba(var(--primary-rgb), 0.1)' : '1px solid transparent'
-                                    }}
-                                >
-                                    <FaPalette style={{ marginRight: '10px' }} /> Preferences
-                                </li>
-                                <li
-                                    onClick={() => setActiveTab('notifications')}
-                                    style={{
-                                        marginBottom: '0.6rem',
-                                        padding: '0.7rem 1.25rem',
-                                        borderRadius: '12px',
-                                        background: activeTab === 'notifications' ? 'var(--primary-light)' : 'transparent',
-                                        color: activeTab === 'notifications' ? 'var(--primary)' : 'var(--text-muted)',
-                                        fontWeight: activeTab === 'notifications' ? '800' : '500',
-                                        fontSize: '0.9rem',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        transition: 'all 0.3s ease',
-                                        border: activeTab === 'notifications' ? '1px solid rgba(var(--primary-rgb), 0.1)' : '1px solid transparent'
-                                    }}
-                                >
-                                    <FaBell style={{ marginRight: '10px' }} /> Notifications
-                                </li>
-                                <li
-                                    onClick={() => setActiveTab('devices')}
-                                    style={{
-                                        marginBottom: '0.6rem',
-                                        padding: '0.7rem 1.25rem',
-                                        borderRadius: '12px',
-                                        background: activeTab === 'devices' ? 'var(--primary-light)' : 'transparent',
-                                        color: activeTab === 'devices' ? 'var(--primary)' : 'var(--text-muted)',
-                                        fontWeight: activeTab === 'devices' ? '800' : '500',
-                                        fontSize: '0.9rem',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        transition: 'all 0.3s ease',
-                                        border: activeTab === 'devices' ? '1px solid rgba(var(--primary-rgb), 0.1)' : '1px solid transparent'
-                                    }}
-                                >
-                                    <FaDesktop style={{ marginRight: '10px' }} /> Active Devices
-                                </li>
-                            </ul>
+                <header className="dashboard-header settings-header-desktop">
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                    >
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 850, marginBottom: '0.3rem' }}>Settings</h1>
+                        <p style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>Manage your account preferences and security.</p>
+                    </motion.div>
+                    <button
+                        className="modal-close-btn"
+                        onClick={() => navigate('/dashboard')}
+                        style={{ background: 'var(--input-bg)', border: '1px solid var(--surface-border)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                    >
+                        <FaTimes />
+                    </button>
+                </header>
+
+                <div className="settings-layout-wrapper">
+                    {/* Mobile Sidebar Overlay */}
+                    <AnimatePresence>
+                        {isSidebarOpen && (
+                            <motion.div
+                                className="sidebar-overlay"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setIsSidebarOpen(false)}
+                            />
+                        )}
+                    </AnimatePresence>
+
+                    {/* Sidebar */}
+                    <motion.div
+                        className={`settings-sidebar-nav ${isSidebarOpen ? 'open' : ''}`}
+                        initial={false}
+                        animate={windowWidth <= 992 ? { x: isSidebarOpen ? 0 : '-100%' } : { x: 0 }}
+                    >
+                        <div className="sidebar-mobile-header">
+                            <h3>Settings</h3>
+                            <button onClick={() => setIsSidebarOpen(false)}><FaTimes /></button>
                         </div>
+                        <ul className="settings-nav-list">
+                            {[
+                                { id: 'profile', icon: <FaUser />, label: 'Profile Info' },
+                                { id: 'security', icon: <FaShieldAlt />, label: 'Privacy & Security' },
+                                { id: 'pins', icon: <FaKey />, label: 'PINs' },
+                                { id: 'cards', icon: <FaCreditCard />, label: 'Cards' },
+                                { id: 'preferences', icon: <FaPalette />, label: 'Preferences' },
+                                { id: 'notifications', icon: <FaBell />, label: 'Notifications' },
+                                { id: 'devices', icon: <FaDesktop />, label: 'Active Devices' },
+                            ].map(item => (
+                                <li
+                                    key={item.id}
+                                    className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                                    onClick={() => {
+                                        setActiveTab(item.id);
+                                        setIsSidebarOpen(false);
+                                    }}
+                                >
+                                    <span className="nav-icon">{item.icon}</span>
+                                    <span className="nav-label">{item.label}</span>
+                                    <FaChevronRight className="nav-arrow" />
+                                </li>
+                            ))}
+                        </ul>
+                    </motion.div>
 
-                        {/* Content */}
-                        <div style={{ flex: '1 0 300px' }}>
-                            {activeTab === 'profile' && (
-                                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-                                        <h2 style={{ margin: 0, fontSize: '1.4rem' }}>Profile Information</h2>
-                                        {!isEditing && (
-                                            <button className="btn-premium primary" style={{ padding: '0.5rem 1.2rem', fontSize: '0.85rem', width: 'fit-content', minHeight: 'unset' }} onClick={() => setIsEditing(true)}>Edit Profile</button>
-                                        )}
-                                    </div>
+                    {/* Content Section */}
+                    <div className="settings-main-content">
+                        {activeTab === 'profile' && (
+                            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                                    <h2 style={{ margin: 0, fontSize: '1.4rem' }}>Profile Information</h2>
+                                    {!isEditing && (
+                                        <button className="btn-premium primary" style={{ padding: '0.5rem 1.2rem', fontSize: '0.85rem', width: 'fit-content', minHeight: 'unset' }} onClick={() => setIsEditing(true)}>Edit Profile</button>
+                                    )}
+                                </div>
 
-                                    <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-                                        <div style={{ position: 'relative', display: 'inline-block' }}>
-                                            <img
-                                                src={selectedAvatar}
-                                                alt="Current Avatar"
-                                                style={{ width: '100px', height: '100px', borderRadius: '50%', border: '4px solid var(--surface)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                                            />
-                                            <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
-                                                {avatarOptions.map((url, idx) => (
-                                                    <img
-                                                        key={idx}
-                                                        src={url}
-                                                        alt={`Option ${idx}`}
-                                                        onClick={() => handleAvatarUpdate(url)}
-                                                        style={{
-                                                            width: '40px',
-                                                            height: '40px',
-                                                            borderRadius: '50%',
-                                                            cursor: 'pointer',
-                                                            border: selectedAvatar === url ? '2px solid var(--primary)' : '2px solid transparent',
-                                                            opacity: selectedAvatar === url ? 1 : 0.7,
-                                                            transition: 'all 0.2s'
-                                                        }}
-                                                        onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                                                        onMouseLeave={e => e.currentTarget.style.opacity = selectedAvatar === url ? 1 : 0.7}
-                                                    />
-                                                ))}
-                                                <div
+                                <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+                                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                                        <img
+                                            src={selectedAvatar}
+                                            alt="Current Avatar"
+                                            style={{ width: '100px', height: '100px', borderRadius: '50%', border: '4px solid var(--surface)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                        />
+                                        <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+                                            {avatarOptions.map((url, idx) => (
+                                                <img
+                                                    key={idx}
+                                                    src={url}
+                                                    alt={`Option ${idx}`}
+                                                    onClick={() => handleAvatarUpdate(url)}
                                                     style={{
                                                         width: '40px',
                                                         height: '40px',
                                                         borderRadius: '50%',
-                                                        background: 'var(--surface)',
-                                                        border: '1px dashed var(--text-muted)',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
                                                         cursor: 'pointer',
-                                                        fontSize: '1.2rem',
-                                                        color: 'var(--text-muted)'
+                                                        border: selectedAvatar === url ? '2px solid var(--primary)' : '2px solid transparent',
+                                                        opacity: selectedAvatar === url ? 1 : 0.7,
+                                                        transition: 'all 0.2s'
                                                     }}
-                                                    onClick={() => fileInputRef.current.click()}
-                                                    title="Upload Image"
-                                                >
-                                                    +
-                                                </div>
-                                                <input
-                                                    type="file"
-                                                    ref={fileInputRef}
-                                                    onChange={handleFileUpload}
-                                                    hidden
-                                                    accept="image/*"
+                                                    onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                                                    onMouseLeave={e => e.currentTarget.style.opacity = selectedAvatar === url ? 1 : 0.7}
                                                 />
+                                            ))}
+                                            <div
+                                                style={{
+                                                    width: '40px',
+                                                    height: '40px',
+                                                    borderRadius: '50%',
+                                                    background: 'var(--surface)',
+                                                    border: '1px dashed var(--text-muted)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    cursor: 'pointer',
+                                                    fontSize: '1.2rem',
+                                                    color: 'var(--text-muted)'
+                                                }}
+                                                onClick={() => fileInputRef.current.click()}
+                                                title="Upload Image"
+                                            >
+                                                +
                                             </div>
-                                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Select an avatar or upload your own</p>
-
-                                            {selectedAvatar && !selectedAvatar.includes('ui-avatars.com') && (
-                                                <button
-                                                    onClick={async () => {
-                                                        if (window.confirm('Remove custom avatar?')) {
-                                                            try {
-                                                                await UserService.removeAvatar();
-                                                                const defaultUrl = `https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&background=random`;
-                                                                setSelectedAvatar(defaultUrl);
-                                                                const updatedUser = { ...user, profileImageUrl: null };
-                                                                localStorage.setItem('user', JSON.stringify(updatedUser));
-                                                                toast.success("Avatar removed");
-                                                            } catch (e) {
-                                                                toast.error("Failed to remove avatar");
-                                                            }
-                                                        }
-                                                    }}
-                                                    style={{
-                                                        marginTop: '0.5rem',
-                                                        background: 'transparent',
-                                                        border: 'none',
-                                                        color: 'var(--error)',
-                                                        fontSize: '0.8rem',
-                                                        cursor: 'pointer',
-                                                        textDecoration: 'underline'
-                                                    }}
-                                                >
-                                                    Remove Profile Image
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                                        <div>
-                                            <label style={{ display: 'block', marginBottom: '0.3rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>First Name</label>
-                                            <input type="text" className="premium-input" style={{ height: '40px', fontSize: '0.9rem' }} value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={!isEditing} />
-                                        </div>
-                                        <div>
-                                            <label style={{ display: 'block', marginBottom: '0.3rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>Last Name</label>
-                                            <input type="text" className="premium-input" style={{ height: '40px', fontSize: '0.9rem' }} value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={!isEditing} />
-                                        </div>
-                                    </div>
-
-                                    <div style={{ marginBottom: '1rem' }}>
-                                        <label style={{ display: 'block', marginBottom: '0.3rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>Email Address</label>
-                                        <input type="email" className="premium-input" style={{ height: '40px', fontSize: '0.9rem' }} value={email} onChange={(e) => setEmail(e.target.value)} disabled={!isEditing} />
-                                    </div>
-
-                                    <div style={{ marginBottom: '1.5rem' }}>
-                                        <label style={{ display: 'block', marginBottom: '0.3rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>Mobile Number</label>
-                                        <div style={{ display: 'flex', gap: '0.8rem' }}>
                                             <input
-                                                type="text"
-                                                className="premium-input"
-                                                style={{ height: '40px', fontSize: '0.9rem' }}
-                                                value={phoneNumber}
-                                                onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                                                disabled={!isEditing}
-                                                placeholder="10-digit mobile number"
+                                                type="file"
+                                                ref={fileInputRef}
+                                                onChange={handleFileUpload}
+                                                hidden
+                                                accept="image/*"
                                             />
-                                            {isEditing && phoneNumber !== user.phoneNumber && (
-                                                <button
-                                                    className="btn-premium primary"
-                                                    style={{ whiteSpace: 'nowrap', padding: '0 1rem', fontSize: '0.8rem' }}
-                                                    onClick={handleUpdateMobile}
-                                                    disabled={loading}
-                                                >
-                                                    {loading ? '...' : 'Verify'}
-                                                </button>
-                                            )}
                                         </div>
+                                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Select an avatar or upload your own</p>
+
+                                        {selectedAvatar && !selectedAvatar.includes('ui-avatars.com') && (
+                                            <button
+                                                onClick={async () => {
+                                                    if (window.confirm('Remove custom avatar?')) {
+                                                        try {
+                                                            await UserService.removeAvatar();
+                                                            const defaultUrl = `https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&background=random`;
+                                                            setSelectedAvatar(defaultUrl);
+                                                            const updatedUser = { ...user, profileImageUrl: null };
+                                                            localStorage.setItem('user', JSON.stringify(updatedUser));
+                                                            toast.success("Avatar removed");
+                                                        } catch (e) {
+                                                            toast.error("Failed to remove avatar");
+                                                        }
+                                                    }
+                                                }}
+                                                style={{
+                                                    marginTop: '0.5rem',
+                                                    background: 'transparent',
+                                                    border: 'none',
+                                                    color: 'var(--error)',
+                                                    fontSize: '0.8rem',
+                                                    cursor: 'pointer',
+                                                    textDecoration: 'underline'
+                                                }}
+                                            >
+                                                Remove Profile Image
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                                    <div>
+                                        <label style={{ display: 'block', marginBottom: '0.3rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>First Name</label>
+                                        <input type="text" className="premium-input" style={{ height: '40px', fontSize: '0.9rem' }} value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={!isEditing} />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', marginBottom: '0.3rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>Last Name</label>
+                                        <input type="text" className="premium-input" style={{ height: '40px', fontSize: '0.9rem' }} value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={!isEditing} />
+                                    </div>
+                                </div>
+
+                                <div style={{ marginBottom: '1rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.3rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>Email Address</label>
+                                    <input type="email" className="premium-input" style={{ height: '40px', fontSize: '0.9rem' }} value={email} onChange={(e) => setEmail(e.target.value)} disabled={!isEditing} />
+                                </div>
+
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.3rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>Mobile Number</label>
+                                    <div style={{ display: 'flex', gap: '0.8rem' }}>
+                                        <input
+                                            type="text"
+                                            className="premium-input"
+                                            style={{ height: '40px', fontSize: '0.9rem' }}
+                                            value={phoneNumber}
+                                            onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                                            disabled={!isEditing}
+                                            placeholder="10-digit mobile number"
+                                        />
+                                        {isEditing && phoneNumber !== user.phoneNumber && (
+                                            <button
+                                                className="btn-premium primary"
+                                                style={{ whiteSpace: 'nowrap', padding: '0 1rem', fontSize: '0.8rem' }}
+                                                onClick={handleUpdateMobile}
+                                                disabled={loading}
+                                            >
+                                                {loading ? '...' : 'Verify'}
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {isEditing && (
+                                    <div style={{ display: 'flex', gap: '0.8rem', borderTop: '1px solid var(--surface-border)', paddingTop: '1.2rem' }}>
+                                        <button className="btn-premium primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }} onClick={handleUpdateProfile} disabled={loading}>
+                                            {loading ? 'Syncing...' : 'Save Changes'}
+                                        </button>
+                                        <button className="btn-premium ghost" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }} onClick={() => { setIsEditing(false); setFirstName(user.firstName); setLastName(user.lastName); setEmail(user.email); setPhoneNumber(user.phoneNumber || ''); }}>Cancel</button>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
+
+                        {activeTab === 'security' && (
+                            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+                                <h2 style={{ marginBottom: '1.5rem', fontSize: '1.4rem' }}>Privacy & Security</h2>
+
+                                <div style={{ padding: '1.2rem', background: 'var(--input-bg)', borderRadius: '20px', border: '1px solid var(--surface-border)', marginBottom: '1.5rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div>
+                                            <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px' }}><FaLock style={{ color: 'var(--primary)', fontSize: '0.9rem' }} /> Password</h3>
+                                            <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Regularly change your password for better security.</p>
+                                        </div>
+                                        <button className="btn-premium primary" style={{ padding: '0.4rem 1rem', fontSize: '0.8rem', width: 'fit-content', minHeight: 'unset' }} onClick={() => setShowPasswordModal(true)}>
+                                            Change Password
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div style={{ padding: '1.2rem', background: 'rgba(239, 68, 68, 0.03)', borderRadius: '20px', border: '1px solid var(--error-light)' }}>
+                                    <h3 style={{ color: 'var(--error)', margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <FaTrash style={{ fontSize: '0.9rem' }} /> Deactivate Account
+                                    </h3>
+                                    <p style={{ color: 'var(--text-muted)', margin: '0.5rem 0 1rem', fontSize: '0.85rem', lineHeight: '1.5' }}>
+                                        Permanently delete your NeoBank registration. Action is irreversible.
+                                    </p>
+                                    <button className="btn-premium" style={{ background: 'var(--error)', color: 'white', padding: '0.5rem 1.2rem', fontSize: '0.85rem' }} onClick={handleDeleteAccount} disabled={loading}>
+                                        Delete My Account
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeTab === 'pins' && (
+                            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+                                <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Access PINs</h2>
+
+                                {/* Login PIN */}
+                                <div style={{ padding: '1.8rem', background: 'var(--input-bg)', borderRadius: '28px', border: '1px solid var(--surface-border)', marginBottom: '1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <div style={{ width: '40px', height: '40px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <FaShieldVirus style={{ color: 'var(--primary)', fontSize: '1.2rem' }} />
+                                            </div>
+                                            <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '800' }}>Login PIN</h3>
+                                        </div>
+                                        {user.loginPinSet && <span style={{ fontSize: '0.7rem', padding: '5px 12px', borderRadius: '100px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', fontWeight: 800, letterSpacing: '0.05em' }}>ACTIVE</span>}
                                     </div>
 
-                                    {isEditing && (
-                                        <div style={{ display: 'flex', gap: '0.8rem', borderTop: '1px solid var(--surface-border)', paddingTop: '1.2rem' }}>
-                                            <button className="btn-premium primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }} onClick={handleUpdateProfile} disabled={loading}>
-                                                {loading ? 'Syncing...' : 'Save Changes'}
-                                            </button>
-                                            <button className="btn-premium ghost" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }} onClick={() => { setIsEditing(false); setFirstName(user.firstName); setLastName(user.lastName); setEmail(user.email); setPhoneNumber(user.phoneNumber || ''); }}>Cancel</button>
+                                    {!user.loginPinSet ? (
+                                        <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                                            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Secure your account with a 4-6 digit numeric PIN for instant access.</p>
+                                            <button className="btn-premium primary" style={{ width: 'auto', padding: '0.8rem 2.5rem' }} onClick={() => { setModalType('login-pin'); setLoginPinMode('set'); setShowPinModal(true); }}>Setup Login PIN</button>
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '1rem' }}>
+                                            <button className="btn-premium primary" style={{ width: 'auto', padding: '0.6rem 1.5rem', fontSize: '0.85rem' }} onClick={() => { setModalType('login-pin'); setLoginPinMode('reset'); setShowPinModal(true); }}>Change Login PIN</button>
+                                            <button className="btn-premium ghost" style={{ width: 'auto', padding: '0.6rem 1.5rem', fontSize: '0.85rem' }} onClick={handleLoginPinResetRequest}>Forgot Login PIN?</button>
                                         </div>
                                     )}
-                                </motion.div>
-                            )}
+                                </div>
 
-                            {activeTab === 'security' && (
-                                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-                                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.4rem' }}>Privacy & Security</h2>
-
-                                    <div style={{ padding: '1.2rem', background: 'var(--input-bg)', borderRadius: '20px', border: '1px solid var(--surface-border)', marginBottom: '1.5rem' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div>
-                                                <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px' }}><FaLock style={{ color: 'var(--primary)', fontSize: '0.9rem' }} /> Password</h3>
-                                                <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Regularly change your password for better security.</p>
+                                {/* TPIN */}
+                                <div style={{ padding: '1.8rem', background: 'var(--input-bg)', borderRadius: '28px', border: '1px solid var(--surface-border)', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <div style={{ width: '40px', height: '40px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <FaLock style={{ color: 'var(--primary)', fontSize: '1rem' }} />
                                             </div>
-                                            <button className="btn-premium primary" style={{ padding: '0.4rem 1rem', fontSize: '0.8rem', width: 'fit-content', minHeight: 'unset' }} onClick={() => setShowPasswordModal(true)}>
-                                                Change Password
-                                            </button>
+                                            <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '800' }}>Transaction PIN (TPIN)</h3>
                                         </div>
+                                        {user.tpinSet && <span style={{ fontSize: '0.7rem', padding: '5px 12px', borderRadius: '100px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', fontWeight: 800, letterSpacing: '0.05em' }}>SECURE</span>}
                                     </div>
 
-                                    <div style={{ padding: '1.2rem', background: 'rgba(239, 68, 68, 0.03)', borderRadius: '20px', border: '1px solid var(--error-light)' }}>
-                                        <h3 style={{ color: 'var(--error)', margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <FaTrash style={{ fontSize: '0.9rem' }} /> Deactivate Account
-                                        </h3>
-                                        <p style={{ color: 'var(--text-muted)', margin: '0.5rem 0 1rem', fontSize: '0.85rem', lineHeight: '1.5' }}>
-                                            Permanently delete your NeoBank registration. Action is irreversible.
-                                        </p>
-                                        <button className="btn-premium" style={{ background: 'var(--error)', color: 'white', padding: '0.5rem 1.2rem', fontSize: '0.85rem' }} onClick={handleDeleteAccount} disabled={loading}>
-                                            Delete My Account
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            {activeTab === 'pins' && (
-                                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-                                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Access PINs</h2>
-
-                                    {/* Login PIN */}
-                                    <div style={{ padding: '1.8rem', background: 'var(--input-bg)', borderRadius: '28px', border: '1px solid var(--surface-border)', marginBottom: '1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                <div style={{ width: '40px', height: '40px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <FaShieldVirus style={{ color: 'var(--primary)', fontSize: '1.2rem' }} />
-                                                </div>
-                                                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '800' }}>Login PIN</h3>
-                                            </div>
-                                            {user.loginPinSet && <span style={{ fontSize: '0.7rem', padding: '5px 12px', borderRadius: '100px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', fontWeight: 800, letterSpacing: '0.05em' }}>ACTIVE</span>}
+                                    {!user.tpinSet ? (
+                                        <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                                            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Authorize transfers and bill payments with a secure 4-digit TPIN.</p>
+                                            <button className="btn-premium primary" style={{ width: 'auto', padding: '0.8rem 2.5rem' }} onClick={() => { setModalType('tpin'); setTpinMode('set'); setShowPinModal(true); }}>Initialize TPIN</button>
                                         </div>
-
-                                        {!user.loginPinSet ? (
-                                            <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-                                                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Secure your account with a 4-6 digit numeric PIN for instant access.</p>
-                                                <button className="btn-premium primary" style={{ width: 'auto', padding: '0.8rem 2.5rem' }} onClick={() => { setModalType('login-pin'); setLoginPinMode('set'); setShowPinModal(true); }}>Setup Login PIN</button>
-                                            </div>
-                                        ) : (
-                                            <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '1rem' }}>
-                                                <button className="btn-premium primary" style={{ width: 'auto', padding: '0.6rem 1.5rem', fontSize: '0.85rem' }} onClick={() => { setModalType('login-pin'); setLoginPinMode('reset'); setShowPinModal(true); }}>Change Login PIN</button>
-                                                <button className="btn-premium ghost" style={{ width: 'auto', padding: '0.6rem 1.5rem', fontSize: '0.85rem' }} onClick={handleLoginPinResetRequest}>Forgot Login PIN?</button>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* TPIN */}
-                                    <div style={{ padding: '1.8rem', background: 'var(--input-bg)', borderRadius: '28px', border: '1px solid var(--surface-border)', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                <div style={{ width: '40px', height: '40px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <FaLock style={{ color: 'var(--primary)', fontSize: '1rem' }} />
-                                                </div>
-                                                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '800' }}>Transaction PIN (TPIN)</h3>
-                                            </div>
-                                            {user.tpinSet && <span style={{ fontSize: '0.7rem', padding: '5px 12px', borderRadius: '100px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', fontWeight: 800, letterSpacing: '0.05em' }}>SECURE</span>}
+                                    ) : (
+                                        <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '1rem' }}>
+                                            <button className="btn-premium primary" style={{ width: 'auto', padding: '0.6rem 1.5rem', fontSize: '0.85rem' }} onClick={() => { setModalType('tpin'); setTpinMode('change'); setShowPinModal(true); }}>Change TPIN</button>
+                                            <button className="btn-premium ghost" style={{ width: 'auto', padding: '0.6rem 1.5rem', fontSize: '0.85rem' }} onClick={handleResetTpinRequest}>Forgot TPIN?</button>
                                         </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                        )}
 
-                                        {!user.tpinSet ? (
-                                            <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-                                                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Authorize transfers and bill payments with a secure 4-digit TPIN.</p>
-                                                <button className="btn-premium primary" style={{ width: 'auto', padding: '0.8rem 2.5rem' }} onClick={() => { setModalType('tpin'); setTpinMode('set'); setShowPinModal(true); }}>Initialize TPIN</button>
-                                            </div>
-                                        ) : (
-                                            <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '1rem' }}>
-                                                <button className="btn-premium primary" style={{ width: 'auto', padding: '0.6rem 1.5rem', fontSize: '0.85rem' }} onClick={() => { setModalType('tpin'); setTpinMode('change'); setShowPinModal(true); }}>Change TPIN</button>
-                                                <button className="btn-premium ghost" style={{ width: 'auto', padding: '0.6rem 1.5rem', fontSize: '0.85rem' }} onClick={handleResetTpinRequest}>Forgot TPIN?</button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            {activeTab === 'cards' && (
-                                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-                                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Cards</h2>
-                                    <div style={{ padding: '1.5rem', border: '1px solid var(--surface-border)', background: 'var(--input-bg)', borderRadius: '24px' }}>
-                                        {cardLoading ? (
-                                            <div style={{ textAlign: 'center', padding: '2rem' }}>Loading card details...</div>
-                                        ) : card ? (
-                                            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-                                                {/* Card Visual Mini */}
-                                                <div style={{ flex: '0 0 280px', height: '170px', background: 'linear-gradient(135deg, #1e293b 0%, #020617 100%)', borderRadius: '20px', padding: '1.5rem', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 15px 30px rgba(0,0,0,0.3)', position: 'relative' }}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                        <div style={{ fontSize: '0.8rem', opacity: 0.8, fontWeight: 700 }}>NEO PLATINUM</div>
-                                                        <button onClick={() => setShowCardDetails(!showCardDetails)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                            {showCardDetails ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-                                                        </button>
-                                                    </div>
-                                                    <div style={{ fontSize: '1.2rem', letterSpacing: '0.2em', fontFamily: 'monospace' }}>
-                                                        {showCardDetails ? card.cardNumber : `•••• •••• •••• ${card.cardNumber.slice(-4)}`}
-                                                    </div>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                                                        <div style={{ fontSize: '0.8rem' }}>
-                                                            <div style={{ opacity: 0.6, fontSize: '0.6rem' }}>EXPIRES</div>
-                                                            {card.expiryDate}
-                                                        </div>
-                                                        <div style={{ textAlign: 'right' }}>
-                                                            <div style={{ opacity: 0.6, fontSize: '0.6rem' }}>CVV</div>
-                                                            <div style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{showCardDetails ? card.cvv : '•••'}</div>
-                                                        </div>
-                                                        <div style={{ fontSize: '1.2rem', fontWeight: '900', fontStyle: 'italic' }}>VISA</div>
-                                                    </div>
-                                                </div>
-
-                                                {/* Card Controls */}
-                                                <div style={{ flex: '1 0 250px' }}>
-                                                    {cardMode === 'view' ? (
-                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                                                            <h4 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.1rem' }}>Active Card Control</h4>
-                                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Linked to Account No: {card.linkedAccountNumber}</p>
-
-                                                            <button className="btn-premium primary" style={{ width: '100%', padding: '0.8rem' }} onClick={() => setCardMode('manage')}>Set / Reset Card PIN</button>
-                                                            <button className="btn-premium ghost" style={{ width: '100%', padding: '0.8rem' }} onClick={handleCardUnlinkRequest}>Unlink from Account</button>
-                                                            <button className="btn-premium" style={{ width: '100%', padding: '0.8rem', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }} onClick={handleCardDeleteRequest}>Permanent Deletion</button>
-                                                        </div>
-                                                    ) : (
-                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                                                            <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: '700' }}>Manage Debit PIN</h4>
-                                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                                                <input type="password" placeholder="New PIN" maxLength={4} className="premium-input" style={{ height: '45px', textAlign: 'center' }} value={cardPin} onChange={(e) => setCardPin(e.target.value.replace(/\D/g, ''))} />
-                                                                <input type="password" placeholder="Confirm" maxLength={4} className="premium-input" style={{ height: '45px', textAlign: 'center' }} value={confirmCardPin} onChange={(e) => setConfirmCardPin(e.target.value.replace(/\D/g, ''))} />
-                                                            </div>
-                                                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                                                <button className="btn-premium primary" style={{ flex: 2 }} onClick={handleCardPinRequest}>Verify & Set PIN</button>
-                                                                <button className="btn-premium ghost" style={{ flex: 1 }} onClick={() => setCardMode('view')}>Back</button>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div style={{ textAlign: 'center', padding: '2rem' }}>
-                                                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>No active debit card found on this profile.</p>
-                                                <button className="btn-premium primary" onClick={() => navigate('/dashboard')}>Get Your Virtual Card</button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            {activeTab === 'preferences' && (
-                                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-                                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>App Preferences</h2>
-
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                        <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)' }}>
-                                            <h3 style={{ margin: '0 0 1rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px' }}><FaPalette /> Appearance</h3>
-                                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                                {['light', 'dark'].map(t => (
-                                                    <button
-                                                        key={t}
-                                                        onClick={() => {
-                                                            setThemePreference(t);
-                                                            document.documentElement.setAttribute('data-theme', t);
-                                                            localStorage.setItem('theme', t);
-                                                            window.dispatchEvent(new Event('storage'));
-                                                        }}
-                                                        style={{
-                                                            flex: 1,
-                                                            padding: '1rem',
-                                                            borderRadius: '16px',
-                                                            border: themePreference === t ? '2px solid var(--primary)' : '1.5px solid var(--surface-border)',
-                                                            background: themePreference === t ? 'var(--primary-light)' : 'var(--surface)',
-                                                            color: themePreference === t ? 'var(--primary)' : 'var(--text-main)',
-                                                            fontWeight: '700',
-                                                            textTransform: 'capitalize',
-                                                            cursor: 'pointer',
-                                                            transition: 'all 0.2s'
-                                                        }}
-                                                    >
-                                                        {t} Mode
+                        {activeTab === 'cards' && (
+                            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+                                <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Cards</h2>
+                                <div style={{ padding: '1.5rem', border: '1px solid var(--surface-border)', background: 'var(--input-bg)', borderRadius: '24px' }}>
+                                    {cardLoading ? (
+                                        <div style={{ textAlign: 'center', padding: '2rem' }}>Loading card details...</div>
+                                    ) : card ? (
+                                        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                                            {/* Card Visual Mini */}
+                                            <div style={{ flex: '0 0 280px', height: '170px', background: 'linear-gradient(135deg, #1e293b 0%, #020617 100%)', borderRadius: '20px', padding: '1.5rem', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 15px 30px rgba(0,0,0,0.3)', position: 'relative' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <div style={{ fontSize: '0.8rem', opacity: 0.8, fontWeight: 700 }}>NEO PLATINUM</div>
+                                                    <button onClick={() => setShowCardDetails(!showCardDetails)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                        {showCardDetails ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                                                     </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                                            <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)' }}>
-                                                <h3 style={{ margin: '0 0 1rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}><FaGlobe /> Language</h3>
-                                                <select className="premium-input" value={language} onChange={(e) => setLanguage(e.target.value)}>
-                                                    <option>English</option>
-                                                    <option>Hindi</option>
-                                                    <option>Spanish</option>
-                                                    <option>French</option>
-                                                </select>
-                                            </div>
-                                            <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)' }}>
-                                                <h3 style={{ margin: '0 0 1rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>Currency</h3>
-                                                <select className="premium-input" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                                    <option value="INR">Indian Rupee (₹)</option>
-                                                    <option value="USD">US Dollar ($)</option>
-                                                    <option value="EUR">Euro (€)</option>
-                                                    <option value="GBP">Pound (£)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            {activeTab === 'notifications' && (
-                                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-                                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Notification Settings</h2>
-
-                                    <div style={{ background: 'var(--input-bg)', borderRadius: '28px', border: '1px solid var(--surface-border)', overflow: 'hidden' }}>
-                                        {[
-                                            { label: 'Email Alerts', desc: 'Receive transaction receipts & monthly statements.', state: notifEmail, setter: setNotifEmail },
-                                            { label: 'SMS Notifications', desc: 'Real-time SMS for withdrawals & secure access.', state: notifSms, setter: setNotifSms },
-                                            { label: 'Browser Push', desc: 'Instant desktop notifications for account activity.', state: notifPush, setter: setNotifPush },
-                                            { label: 'Marketing Info', desc: 'Get updates on new products and premium offers.', state: notifMarketing, setter: setNotifMarketing }
-                                        ].map((item, idx) => (
-                                            <div key={idx} style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: idx === 3 ? 'none' : '1px solid var(--surface-border)' }}>
-                                                <div>
-                                                    <h4 style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-main)' }}>{item.label}</h4>
-                                                    <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{item.desc}</p>
                                                 </div>
-                                                <div
-                                                    onClick={() => item.setter(!item.state)}
+                                                <div style={{ fontSize: '1.2rem', letterSpacing: '0.2em', fontFamily: 'monospace' }}>
+                                                    {showCardDetails ? card.cardNumber : `•••• •••• •••• ${card.cardNumber.slice(-4)}`}
+                                                </div>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                                                    <div style={{ fontSize: '0.8rem' }}>
+                                                        <div style={{ opacity: 0.6, fontSize: '0.6rem' }}>EXPIRES</div>
+                                                        {card.expiryDate}
+                                                    </div>
+                                                    <div style={{ textAlign: 'right' }}>
+                                                        <div style={{ opacity: 0.6, fontSize: '0.6rem' }}>CVV</div>
+                                                        <div style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{showCardDetails ? card.cvv : '•••'}</div>
+                                                    </div>
+                                                    <div style={{ fontSize: '1.2rem', fontWeight: '900', fontStyle: 'italic' }}>VISA</div>
+                                                </div>
+                                            </div>
+
+                                            {/* Card Controls */}
+                                            <div style={{ flex: '1 0 250px' }}>
+                                                {cardMode === 'view' ? (
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                                                        <h4 style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.1rem' }}>Active Card Control</h4>
+                                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Linked to Account No: {card.linkedAccountNumber}</p>
+
+                                                        <button className="btn-premium primary" style={{ width: '100%', padding: '0.8rem' }} onClick={() => setCardMode('manage')}>Set / Reset Card PIN</button>
+                                                        <button className="btn-premium ghost" style={{ width: '100%', padding: '0.8rem' }} onClick={handleCardUnlinkRequest}>Unlink from Account</button>
+                                                        <button className="btn-premium" style={{ width: '100%', padding: '0.8rem', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)' }} onClick={handleCardDeleteRequest}>Permanent Deletion</button>
+                                                    </div>
+                                                ) : (
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                                                        <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: '700' }}>Manage Debit PIN</h4>
+                                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                            <input type="password" placeholder="New PIN" maxLength={4} className="premium-input" style={{ height: '45px', textAlign: 'center' }} value={cardPin} onChange={(e) => setCardPin(e.target.value.replace(/\D/g, ''))} />
+                                                            <input type="password" placeholder="Confirm" maxLength={4} className="premium-input" style={{ height: '45px', textAlign: 'center' }} value={confirmCardPin} onChange={(e) => setConfirmCardPin(e.target.value.replace(/\D/g, ''))} />
+                                                        </div>
+                                                        <div style={{ display: 'flex', gap: '1rem' }}>
+                                                            <button className="btn-premium primary" style={{ flex: 2 }} onClick={handleCardPinRequest}>Verify & Set PIN</button>
+                                                            <button className="btn-premium ghost" style={{ flex: 1 }} onClick={() => setCardMode('view')}>Back</button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div style={{ textAlign: 'center', padding: '2rem' }}>
+                                            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>No active debit card found on this profile.</p>
+                                            <button className="btn-premium primary" onClick={() => navigate('/dashboard')}>Get Your Virtual Card</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeTab === 'preferences' && (
+                            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+                                <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>App Preferences</h2>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                    <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)' }}>
+                                        <h3 style={{ margin: '0 0 1rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px' }}><FaPalette /> Appearance</h3>
+                                        <div style={{ display: 'flex', gap: '1rem' }}>
+                                            {['light', 'dark'].map(t => (
+                                                <button
+                                                    key={t}
+                                                    onClick={() => {
+                                                        setThemePreference(t);
+                                                        document.documentElement.setAttribute('data-theme', t);
+                                                        localStorage.setItem('theme', t);
+                                                        window.dispatchEvent(new Event('storage'));
+                                                    }}
                                                     style={{
-                                                        width: '50px',
-                                                        height: '26px',
-                                                        background: item.state ? 'var(--primary)' : 'var(--surface-border)',
-                                                        borderRadius: '20px',
-                                                        position: 'relative',
+                                                        flex: 1,
+                                                        padding: '1rem',
+                                                        borderRadius: '16px',
+                                                        border: themePreference === t ? '2px solid var(--primary)' : '1.5px solid var(--surface-border)',
+                                                        background: themePreference === t ? 'var(--primary-light)' : 'var(--surface)',
+                                                        color: themePreference === t ? 'var(--primary)' : 'var(--text-main)',
+                                                        fontWeight: '700',
+                                                        textTransform: 'capitalize',
                                                         cursor: 'pointer',
-                                                        transition: 'all 0.3s ease'
+                                                        transition: 'all 0.2s'
                                                     }}
                                                 >
-                                                    <div style={{
-                                                        width: '20px',
-                                                        height: '20px',
-                                                        background: 'white',
-                                                        borderRadius: '50%',
-                                                        position: 'absolute',
-                                                        top: '3px',
-                                                        left: item.state ? '27px' : '3px',
-                                                        transition: 'all 0.3s ease',
-                                                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-                                                    }} />
-                                                </div>
-                                            </div>
-                                        ))}
+                                                    {t} Mode
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
-                                </motion.div>
-                            )}
 
-                            {activeTab === 'devices' && (
-                                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
-                                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Logged-in Devices</h2>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                        <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)' }}>
+                                            <h3 style={{ margin: '0 0 1rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}><FaGlobe /> Language</h3>
+                                            <select className="premium-input" value={language} onChange={(e) => setLanguage(e.target.value)}>
+                                                <option>English</option>
+                                                <option>Hindi</option>
+                                                <option>Spanish</option>
+                                                <option>French</option>
+                                            </select>
+                                        </div>
+                                        <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)' }}>
+                                            <h3 style={{ margin: '0 0 1rem', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>Currency</h3>
+                                            <select className="premium-input" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                                <option value="INR">Indian Rupee (₹)</option>
+                                                <option value="USD">US Dollar ($)</option>
+                                                <option value="EUR">Euro (€)</option>
+                                                <option value="GBP">Pound (£)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
 
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                        <div style={{ padding: '1.5rem', background: 'var(--primary-light)', borderRadius: '24px', border: '1px solid rgba(var(--primary-rgb), 0.1)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                                            <div style={{ width: '50px', height: '50px', background: 'var(--primary)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.25rem' }}>
-                                                <FaDesktop />
+                        {activeTab === 'notifications' && (
+                            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+                                <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Notification Settings</h2>
+
+                                <div style={{ background: 'var(--input-bg)', borderRadius: '28px', border: '1px solid var(--surface-border)', overflow: 'hidden' }}>
+                                    {[
+                                        { label: 'Email Alerts', desc: 'Receive transaction receipts & monthly statements.', state: notifEmail, setter: setNotifEmail },
+                                        { label: 'SMS Notifications', desc: 'Real-time SMS for withdrawals & secure access.', state: notifSms, setter: setNotifSms },
+                                        { label: 'Browser Push', desc: 'Instant desktop notifications for account activity.', state: notifPush, setter: setNotifPush },
+                                        { label: 'Marketing Info', desc: 'Get updates on new products and premium offers.', state: notifMarketing, setter: setNotifMarketing }
+                                    ].map((item, idx) => (
+                                        <div key={idx} style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: idx === 3 ? 'none' : '1px solid var(--surface-border)' }}>
+                                            <div>
+                                                <h4 style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-main)' }}>{item.label}</h4>
+                                                <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{item.desc}</p>
                                             </div>
-                                            <div style={{ flex: 1 }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                    <h4 style={{ margin: 0, fontSize: '1.1rem' }}>Windows Desktop • Chrome</h4>
-                                                    <span style={{ fontSize: '0.65rem', padding: '3px 8px', background: 'var(--primary)', color: 'white', borderRadius: '100px', fontWeight: 800 }}>CURRENT</span>
-                                                </div>
-                                                <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>San Francisco, USA • 192.168.1.1</p>
+                                            <div
+                                                onClick={() => item.setter(!item.state)}
+                                                style={{
+                                                    width: '50px',
+                                                    height: '26px',
+                                                    background: item.state ? 'var(--primary)' : 'var(--surface-border)',
+                                                    borderRadius: '20px',
+                                                    position: 'relative',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.3s ease'
+                                                }}
+                                            >
+                                                <div style={{
+                                                    width: '20px',
+                                                    height: '20px',
+                                                    background: 'white',
+                                                    borderRadius: '50%',
+                                                    position: 'absolute',
+                                                    top: '3px',
+                                                    left: item.state ? '27px' : '3px',
+                                                    transition: 'all 0.3s ease',
+                                                    boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                                                }} />
                                             </div>
                                         </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
 
-                                        <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)', display: 'flex', alignItems: 'center', gap: '1.5rem', opacity: 0.8 }}>
-                                            <div style={{ width: '50px', height: '50px', background: 'var(--text-muted)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.25rem' }}>
-                                                <FaHistory />
-                                            </div>
-                                            <div style={{ flex: 1 }}>
-                                                <h4 style={{ margin: 0, fontSize: '1.1rem' }}>iPhone 15 Pro • Safari</h4>
-                                                <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Yesterday, 10:45 PM • Mobile App</p>
-                                            </div>
-                                            <button style={{ background: 'none', border: 'none', color: 'var(--error)', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>Logout</button>
+                        {activeTab === 'devices' && (
+                            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+                                <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Logged-in Devices</h2>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <div style={{ padding: '1.5rem', background: 'var(--primary-light)', borderRadius: '24px', border: '1px solid rgba(var(--primary-rgb), 0.1)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                                        <div style={{ width: '50px', height: '50px', background: 'var(--primary)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.25rem' }}>
+                                            <FaDesktop />
                                         </div>
-
-                                        <button className="btn-premium" style={{ border: '1.5px solid var(--error)', color: 'var(--error)', background: 'transparent', marginTop: '1rem', height: '50px' }} onClick={logout}>
-                                            Sign Out from All Devices
-                                        </button>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                <h4 style={{ margin: 0, fontSize: '1.1rem' }}>Windows Desktop • Chrome</h4>
+                                                <span style={{ fontSize: '0.65rem', padding: '3px 8px', background: 'var(--primary)', color: 'white', borderRadius: '100px', fontWeight: 800 }}>CURRENT</span>
+                                            </div>
+                                            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>San Francisco, USA • 192.168.1.1</p>
+                                        </div>
                                     </div>
-                                </motion.div>
-                            )}
-                        </div>
+
+                                    <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)', display: 'flex', alignItems: 'center', gap: '1.5rem', opacity: 0.8 }}>
+                                        <div style={{ width: '50px', height: '50px', background: 'var(--text-muted)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.25rem' }}>
+                                            <FaHistory />
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <h4 style={{ margin: 0, fontSize: '1.1rem' }}>iPhone 15 Pro • Safari</h4>
+                                            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Yesterday, 10:45 PM • Mobile App</p>
+                                        </div>
+                                        <button style={{ background: 'none', border: 'none', color: 'var(--error)', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>Logout</button>
+                                    </div>
+
+                                    <button className="btn-premium" style={{ border: '1.5px solid var(--error)', color: 'var(--error)', background: 'transparent', marginTop: '1rem', height: '50px' }} onClick={logout}>
+                                        Sign Out from All Devices
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
                     </div>
                 </div>
 
