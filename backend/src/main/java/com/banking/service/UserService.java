@@ -323,4 +323,34 @@ public class UserService {
         // 5. Finally delete the user
         userRepository.delete(user);
     }
+
+    public java.util.Map<String, Boolean> getNotificationSettings(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        java.util.Map<String, Boolean> settings = new java.util.HashMap<>();
+        settings.put("email", user.getEmailNotifications());
+        settings.put("sms", user.getSmsNotifications());
+        settings.put("push", user.getPushNotifications());
+        settings.put("marketing", user.getMarketingNotifications());
+
+        return settings;
+    }
+
+    @Transactional
+    public void updateNotificationSettings(Long userId, java.util.Map<String, Boolean> settings) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (settings.containsKey("email"))
+            user.setEmailNotifications(settings.get("email"));
+        if (settings.containsKey("sms"))
+            user.setSmsNotifications(settings.get("sms"));
+        if (settings.containsKey("push"))
+            user.setPushNotifications(settings.get("push"));
+        if (settings.containsKey("marketing"))
+            user.setMarketingNotifications(settings.get("marketing"));
+
+        userRepository.save(user);
+    }
 }

@@ -147,6 +147,43 @@ const Settings = () => {
     const [notifPush, setNotifPush] = useState(false);
     const [notifMarketing, setNotifMarketing] = useState(false);
 
+    React.useEffect(() => {
+        const fetchNotifs = async () => {
+            try {
+                const res = await UserService.getNotificationSettings();
+                const data = res.data;
+                setNotifEmail(data.email);
+                setNotifSms(data.sms);
+                setNotifPush(data.push);
+                setNotifMarketing(data.marketing);
+            } catch (err) {
+                console.error("Failed to fetch notification settings");
+            }
+        };
+        fetchNotifs();
+    }, []);
+
+    const handleNotifToggle = async (type, currentVal) => {
+        const newVal = !currentVal;
+        // Update local state immediately for snappy UI
+        if (type === 'email') setNotifEmail(newVal);
+        if (type === 'sms') setNotifSms(newVal);
+        if (type === 'push') setNotifPush(newVal);
+        if (type === 'marketing') setNotifMarketing(newVal);
+
+        try {
+            await UserService.updateNotificationSettings({ [type]: newVal });
+            toast.success("Notification updated", { autoClose: 1000 });
+        } catch (err) {
+            // Rollback on error
+            if (type === 'email') setNotifEmail(currentVal);
+            if (type === 'sms') setNotifSms(currentVal);
+            if (type === 'push') setNotifPush(currentVal);
+            if (type === 'marketing') setNotifMarketing(currentVal);
+            toast.error("Failed to update notification");
+        }
+    };
+
     const handleUpdateProfile = async () => {
         setLoading(true);
         try {
@@ -969,10 +1006,10 @@ const Settings = () => {
 
                                 <div style={{ background: 'var(--input-bg)', borderRadius: '28px', border: '1px solid var(--surface-border)', overflow: 'hidden' }}>
                                     {[
-                                        { label: 'Email Alerts', desc: 'Receive transaction receipts & monthly statements.', state: notifEmail, setter: setNotifEmail },
-                                        { label: 'SMS Notifications', desc: 'Real-time SMS for withdrawals & secure access.', state: notifSms, setter: setNotifSms },
-                                        { label: 'Browser Push', desc: 'Instant desktop notifications for account activity.', state: notifPush, setter: setNotifPush },
-                                        { label: 'Marketing Info', desc: 'Get updates on new products and premium offers.', state: notifMarketing, setter: setNotifMarketing }
+                                        { id: 'email', label: 'Email Alerts', desc: 'Receive transaction receipts & monthly statements.', state: notifEmail },
+                                        { id: 'sms', label: 'SMS Notifications', desc: 'Real-time SMS for withdrawals & secure access.', state: notifSms },
+                                        { id: 'push', label: 'Browser Push', desc: 'Instant desktop notifications for account activity.', state: notifPush },
+                                        { id: 'marketing', label: 'Marketing Info', desc: 'Get updates on new products and premium offers.', state: notifMarketing }
                                     ].map((item, idx) => (
                                         <div key={idx} style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: idx === 3 ? 'none' : '1px solid var(--surface-border)' }}>
                                             <div>
@@ -980,7 +1017,7 @@ const Settings = () => {
                                                 <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>{item.desc}</p>
                                             </div>
                                             <div
-                                                onClick={() => item.setter(!item.state)}
+                                                onClick={() => handleNotifToggle(item.id, item.state)}
                                                 style={{
                                                     width: '50px',
                                                     height: '26px',

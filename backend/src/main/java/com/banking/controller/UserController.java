@@ -245,4 +245,24 @@ public class UserController {
             return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
         }
     }
+
+    @GetMapping("/notifications")
+    public ResponseEntity<?> getNotificationSettings(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        try {
+            return ResponseEntity.ok(userService.getNotificationSettings(userPrincipal.getId()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+        }
+    }
+
+    @PutMapping("/notifications")
+    public ResponseEntity<?> updateNotificationSettings(@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody Map<String, Boolean> settings) {
+        try {
+            userService.updateNotificationSettings(userPrincipal.getId(), settings);
+            return ResponseEntity.ok(new ApiResponse(true, "Notification settings updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage()));
+        }
+    }
 }

@@ -79,6 +79,14 @@ const changeTpin = async (oldTpin, newTpin) => {
     return api.post('users/change-tpin', { oldTpin, newTpin });
 };
 
+const getNotificationSettings = async () => {
+    return api.get('users/notifications');
+};
+
+const updateNotificationSettings = async (settings) => {
+    return api.put('users/notifications', settings);
+};
+
 const UserService = {
     sendUpdateOtp,
     updateProfile,
@@ -97,7 +105,9 @@ const UserService = {
     setLoginPin,
     resetLoginPin,
     changeLoginPin,
-    changeTpin
+    changeTpin,
+    getNotificationSettings,
+    updateNotificationSettings
 };
 
 export default UserService;

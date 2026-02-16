@@ -69,6 +69,18 @@ public class User {
     @Column(nullable = false)
     private Boolean loginPinSet = false;
 
+    @Column(nullable = false)
+    private Boolean emailNotifications = true;
+
+    @Column(nullable = false)
+    private Boolean smsNotifications = true;
+
+    @Column(nullable = false)
+    private Boolean pushNotifications = false;
+
+    @Column(nullable = false)
+    private Boolean marketingNotifications = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
