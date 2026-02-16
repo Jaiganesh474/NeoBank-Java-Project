@@ -17,16 +17,6 @@ public class EmailService {
     @org.springframework.beans.factory.annotation.Value("${spring.mail.from:eatsureofficial@gmail.com}")
     private String fromEmail;
 
-    @jakarta.annotation.PostConstruct
-    public void init() {
-        // Fallback: If MAIL_FROM is default, use MAIL_USERNAME as the sender address
-        // This is critical for SMTP relays like Brevo/Gmail that require authorized
-        // senders.
-        if ("eatsureofficial@gmail.com".equals(fromEmail) && smtpUsername != null && smtpUsername.contains("@")) {
-            this.fromEmail = smtpUsername;
-        }
-    }
-
     @Async
     public void sendDebitNotification(String to, String firstName, String amount, String recipient,
             String transactionId) {
