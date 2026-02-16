@@ -20,10 +20,25 @@ const Settings = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     React.useEffect(() => {
-        const handleResize = () => setWindowWidth(window.innerWidth);
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+            if (window.innerWidth > 992) setIsSidebarOpen(false);
+        };
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    // Prevent background scroll when sidebar is open
+    React.useEffect(() => {
+        if (isSidebarOpen && windowWidth <= 992) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isSidebarOpen, windowWidth]);
 
     // Card State
     const [card, setCard] = useState(null);
@@ -528,7 +543,6 @@ const Settings = () => {
                     <button
                         className="modal-close-btn"
                         onClick={() => navigate('/dashboard')}
-                        style={{ background: 'var(--input-bg)', border: '1px solid var(--surface-border)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                     >
                         <FaTimes />
                     </button>
