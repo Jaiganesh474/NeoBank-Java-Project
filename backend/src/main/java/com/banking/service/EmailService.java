@@ -11,6 +11,9 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
+    private String senderEmail;
+
     // @Async (Temporarily disabled to diagnose connection issues)
     public void sendOtpEmail(String to, String otp) {
         try {
@@ -19,7 +22,7 @@ public class EmailService {
                     message, true, "UTF-8");
 
             helper.setTo(to);
-            helper.setFrom("onboarding@resend.dev", "NeoBank");
+            helper.setFrom(senderEmail, "NeoBank");
             helper.setSubject("NeoBank | Verify Your Identity");
 
             String htmlContent = "<html><body style='font-family: Arial, sans-serif; background-color: #f8fafc; padding: 40px;'>"
