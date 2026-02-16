@@ -60,10 +60,10 @@ public class AuthService {
         String otp = String.format("%06d", new Random().nextInt(999999));
 
         otpTokenRepository.deleteByEmail(email); // Remove old OTP if exists
-        OtpToken otpToken = new OtpToken(email, otp, 3); // 3 minutes expiry
+        OtpToken otpToken = new OtpToken(email, otp, 5); // Increased to 5 minutes
         otpTokenRepository.save(otpToken);
 
-        emailService.sendOtpEmail(email, otp);
+        emailService.sendForgotPasswordOtpEmail(email, otp);
     }
 
     @Transactional
@@ -93,6 +93,9 @@ public class AuthService {
         userRepository.save(user);
 
         otpTokenRepository.delete(otpToken); // Cleanup after success
+
+        // Send confirmation email
+        emailService.sendPasswordUpdatedNotification(user.getEmail(), user.getFirstName());
     }
 
     @Transactional
@@ -134,6 +137,17 @@ public class AuthService {
     }
 
     @Transactional
+    public void generateRegistrationOtp(String email, String firstName) {
+        String otp = String.format("%06d", new Random().nextInt(999999));
+
+        otpTokenRepository.deleteByEmail(email);
+        OtpToken otpToken = new OtpToken(email, otp, 15); // 15 minutes for new account verification
+        otpTokenRepository.save(otpToken);
+
+        emailService.sendRegistrationOtpEmail(email, firstName, otp);
+    }
+
+    @Transactional
     public void resendVerificationOtp(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -142,7 +156,7 @@ public class AuthService {
             throw new RuntimeException("Account is already verified");
         }
 
-        generateForgotPasswordOtp(email); // Reuse generation logic
+        generateRegistrationOtp(email, user.getFirstName());
     }
 
     @Transactional

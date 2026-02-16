@@ -225,6 +225,11 @@ const Settings = () => {
             toast.error("Password must be at least 6 characters");
             return;
         }
+
+        if (!window.confirm("Are you sure you want to change your login password? You will need to verify your identity via email.")) {
+            return;
+        }
+
         setLoading(true);
         try {
             await UserService.sendUpdateOtp(); // Reuse same email OTP logic

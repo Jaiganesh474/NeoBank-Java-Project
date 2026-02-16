@@ -25,6 +25,7 @@ public class UserService {
     private final com.banking.repository.AccountRepository accountRepository;
     private final com.banking.repository.TransactionRepository transactionRepository;
     private final com.banking.repository.CardRepository cardRepository;
+    private final EmailService emailService;
 
     public User registerUser(SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -55,8 +56,8 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        // Generate and send OTP for registration
-        customAuthService.generateForgotPasswordOtp(user.getEmail()); // Reuse OTP generation logic
+        // Generate and send OTP for registration with specialized template
+        customAuthService.generateRegistrationOtp(user.getEmail(), user.getFirstName());
 
         return savedUser;
     }
@@ -265,6 +266,9 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+
+        // Security notification
+        emailService.sendPasswordUpdatedNotification(user.getEmail(), user.getFirstName());
     }
 
     @Transactional

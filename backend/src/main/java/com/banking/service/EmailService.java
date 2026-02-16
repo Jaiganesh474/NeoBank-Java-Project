@@ -17,8 +17,17 @@ public class EmailService {
     @org.springframework.beans.factory.annotation.Value("${spring.mail.from:eatsureofficial@gmail.com}")
     private String fromEmail;
 
-    // @Async (Temporarily disabled to diagnose connection issues)
-    // @Async (Temporarily disabled to diagnose connection issues)
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        // Fallback: If MAIL_FROM is default, use MAIL_USERNAME as the sender address
+        // This is critical for SMTP relays like Brevo/Gmail that require authorized
+        // senders.
+        if ("eatsureofficial@gmail.com".equals(fromEmail) && smtpUsername != null && smtpUsername.contains("@")) {
+            this.fromEmail = smtpUsername;
+        }
+    }
+
+    @Async
     public void sendDebitNotification(String to, String firstName, String amount, String recipient,
             String transactionId) {
         try {
@@ -75,7 +84,7 @@ public class EmailService {
         }
     }
 
-    // @Async
+    @Async
     public void sendCreditNotification(String to, String firstName, String amount, String sender,
             String transactionId) {
         try {
@@ -133,6 +142,23 @@ public class EmailService {
     }
 
     public void sendOtpEmail(String to, String otp) {
+        sendSecurityEmail(to, "Security Verification", "Verification Code", otp,
+                "If you did not request this code, please ignore this email.");
+    }
+
+    public void sendRegistrationOtpEmail(String to, String firstName, String otp) {
+        String greeting = (firstName != null && !firstName.isEmpty()) ? "Welcome, " + firstName + "!"
+                : "Welcome to NeoBank!";
+        sendSecurityEmail(to, "Welcome to NeoBank", greeting, otp,
+                "Use the code below to verify your email and activate your account.");
+    }
+
+    public void sendForgotPasswordOtpEmail(String to, String otp) {
+        sendSecurityEmail(to, "Reset Your Password", "Password Reset Request", otp,
+                "We received a request to reset your password. Use the code below to proceed.");
+    }
+
+    public void sendPasswordUpdatedNotification(String to, String firstName) {
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
@@ -140,40 +166,84 @@ public class EmailService {
 
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Security");
-            helper.setSubject("Security Code: " + otp);
+            helper.setSubject("Security Alert: Password Updated");
 
-            String htmlContent = "<html><body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
+            String htmlContent = "<html><body style='font-family: -apple-system, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
                     +
                     "<div style='max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
                     +
-                    "<div style='background: #3b82f6; padding: 30px; text-align: center;'>" +
-                    "<h1 style='color: white; margin: 0; font-size: 24px; font-weight: 800;'>Security Verification</h1>"
-                    +
+                    "<div style='background: #1e293b; padding: 30px; text-align: center;'>" +
+                    "<h1 style='color: white; margin: 0; font-size: 24px; font-weight: 800;'>Security Update</h1>" +
                     "</div>" +
                     "<div style='padding: 40px; text-align: center;'>" +
-                    "<p style='color: #64748b; font-size: 16px; margin-top: 0;'>Hello,</p>" +
-                    "<p style='color: #1e293b; font-size: 16px; line-height: 1.6;'>Use the verification code below to complete your action. This code is valid for <strong>3 minutes</strong>.</p>"
+                    "<div style='width: 60px; height: 60px; background: #fef3c7; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;'>"
                     +
-                    "<div style='background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 20px; margin: 30px 0;'>"
-                    +
-                    "<span style='font-size: 36px; font-weight: 800; letter-spacing: 8px; color: #1e293b;'>" + otp
-                    + "</span>" +
+                    "<span style='font-size: 30px;'>🔒</span>" +
                     "</div>" +
-                    "<p style='color: #94a3b8; font-size: 13px; line-height: 1.6;'>If you did not request this code, please ignore this email or contact support if you suspect unauthorized activity.</p>"
+                    "<p style='color: #1e293b; font-size: 18px; font-weight: 700; margin-top: 0;'>Password Successfully Changed</p>"
+                    +
+                    "<p style='color: #64748b; font-size: 15px; line-height: 1.6;'>Hi "
+                    + (firstName != null ? firstName : "there")
+                    + ",<br><br>The password for your NeoBank account was recently updated. If you made this change, you can safely ignore this email.</p>"
+                    +
+                    "<div style='background: #fdf2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 15px; margin: 25px 0;'>"
+                    +
+                    "<p style='color: #b91c1c; font-size: 13px; margin: 0;'><strong>Did not make this change?</strong><br>If you suspect unauthorized access, please lock your account immediately or contact support.</p>"
+                    +
+                    "</div>" +
+                    "<a href='#' style='background: #3b82f6; color: white; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; display: inline-block; margin-top: 10px;'>Contact Support</a>"
                     +
                     "</div>" +
                     "<div style='background: #f8fafc; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;'>"
                     +
-                    "© 2026 NeoBank | Secure Banking. All rights reserved." +
+                    "© 2026 NeoBank | All Rights Reserved" +
                     "</div>" +
-                    "</div>" +
-                    "</body></html>";
+                    "</div></body></html>";
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
         } catch (Exception e) {
-            System.err.println("Error sending OTP email: " + e.getMessage());
-            throw new RuntimeException("Email service unavailable.");
+            System.err.println("Error sending password update email: " + e.getMessage());
+        }
+    }
+
+    private void sendSecurityEmail(String to, String subject, String title, String code, String description) {
+        try {
+            jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
+            org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
+                    message, true, "UTF-8");
+
+            helper.setTo(to);
+            helper.setFrom(fromEmail, "NeoBank Security");
+            helper.setSubject(subject + ": " + code);
+
+            String htmlContent = "<html><body style='font-family: -apple-system, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
+                    +
+                    "<div style='max-width: 500px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
+                    +
+                    "<div style='background: #3b82f6; padding: 30px; text-align: center;'>" +
+                    "<h1 style='color: white; margin: 0; font-size: 24px; font-weight: 800;'>" + title + "</h1>" +
+                    "</div>" +
+                    "<div style='padding: 40px; text-align: center;'>" +
+                    "<p style='color: #475569; font-size: 16px; line-height: 1.6;'>" + description + "</p>" +
+                    "<div style='background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 25px; margin: 30px 0;'>"
+                    +
+                    "<span style='font-size: 38px; font-weight: 800; letter-spacing: 8px; color: #1e293b;'>" + code
+                    + "</span>" +
+                    "</div>" +
+                    "<p style='color: #94a3b8; font-size: 13px;'>This code is valid for <strong>5 minutes</strong>. For your security, never share this code with anyone.</p>"
+                    +
+                    "</div>" +
+                    "<div style='background: #f8fafc; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;'>"
+                    +
+                    "© 2026 NeoBank | Powered by Security Intelligence" +
+                    "</div>" +
+                    "</div></body></html>";
+
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.err.println("Error sending security email (" + subject + "): " + e.getMessage());
         }
     }
 }
