@@ -30,10 +30,12 @@ public class EmailService {
     @Async
     public void sendDebitNotification(String to, String firstName, String amount, String recipient,
             String transactionId) {
+        System.out.println("SMTP: Preparing debit notification for " + to);
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
+            // Use multipart=false for pure HTML emails to improve deliverability
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
-                    message, true, "UTF-8");
+                    message, false, "UTF-8");
 
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Alerts");
@@ -79,18 +81,21 @@ public class EmailService {
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
+            System.out.println("SMTP: Debit notification successfully delivered to relay for " + to);
         } catch (Exception e) {
-            System.err.println("Error sending debit notification: " + e.getMessage());
+            System.err.println("SMTP ERROR: Failed to send debit notification to " + to + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Async
     public void sendCreditNotification(String to, String firstName, String amount, String sender,
             String transactionId) {
+        System.out.println("SMTP: Preparing credit notification for " + to);
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
-                    message, true, "UTF-8");
+                    message, false, "UTF-8");
 
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Alerts");
@@ -136,8 +141,10 @@ public class EmailService {
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
+            System.out.println("SMTP: Credit notification successfully delivered to relay for " + to);
         } catch (Exception e) {
-            System.err.println("Error sending credit notification: " + e.getMessage());
+            System.err.println("SMTP ERROR: Failed to send credit notification to " + to + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -159,10 +166,11 @@ public class EmailService {
     }
 
     public void sendPasswordUpdatedNotification(String to, String firstName) {
+        System.out.println("SMTP: Preparing password update alert for " + to);
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
-                    message, true, "UTF-8");
+                    message, false, "UTF-8");
 
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Security");
@@ -202,16 +210,19 @@ public class EmailService {
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
+            System.out.println("SMTP: Password updated alert successfully delivered to relay for " + to);
         } catch (Exception e) {
-            System.err.println("Error sending password update email: " + e.getMessage());
+            System.err.println("SMTP ERROR: Failed to send password update alert: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private void sendSecurityEmail(String to, String subject, String title, String code, String description) {
+        System.out.println("SMTP: Preparing security email (" + subject + ") for " + to);
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
-                    message, true, "UTF-8");
+                    message, false, "UTF-8");
 
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Security");
@@ -242,8 +253,10 @@ public class EmailService {
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
+            System.out.println("SMTP: Security email (" + subject + ") successfully delivered to relay for " + to);
         } catch (Exception e) {
-            System.err.println("Error sending security email (" + subject + "): " + e.getMessage());
+            System.err.println("SMTP ERROR: Failed to send security email (" + subject + "): " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
