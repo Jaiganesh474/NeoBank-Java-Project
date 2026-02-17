@@ -23,6 +23,7 @@ const Transactions = () => {
     const fetchTransactions = async () => {
         try {
             const res = await api.get('/accounts/transactions');
+            console.log(`DEBUG: Transactions page fetched ${res.data.length} records`);
             setTransactions(res.data);
         } catch (err) {
             console.error("Failed to fetch transactions", err);

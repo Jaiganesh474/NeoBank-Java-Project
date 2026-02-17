@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserDeviceRepository extends JpaRepository<UserDevice, Long> {
-    @org.springframework.data.jpa.repository.Query("SELECT d FROM UserDevice d WHERE d.user.id = :userId ORDER BY d.loginTime DESC")
+    @org.springframework.data.jpa.repository.Query("SELECT d FROM UserDevice d WHERE d.user.id = :userId ORDER BY d.id DESC")
     List<UserDevice> findByUserIdCustom(@org.springframework.data.repository.query.Param("userId") Long userId);
 
     Optional<UserDevice> findByRefreshToken(String refreshToken);

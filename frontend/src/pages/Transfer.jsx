@@ -21,6 +21,7 @@ const Transfer = () => {
     const [showTpinModal, setShowTpinModal] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [successTransaction, setSuccessTransaction] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,13 +63,14 @@ const Transfer = () => {
         setError('');
 
         try {
-            await transferMoney(
+            const result = await transferMoney(
                 formData.fromAccountNumber,
                 formData.toAccountNumber,
                 Number(formData.amount),
                 formData.description,
                 tpin
             );
+            setSuccessTransaction(result);
             setShowTpinModal(false);
             setTpin('');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -248,7 +250,7 @@ const Transfer = () => {
                             <div className="success-details">
                                 <div className="detail-line">
                                     <span>Transaction ID</span>
-                                    <span>#TX-{Math.random().toString(36).substr(2, 9).toUpperCase()}</span>
+                                    <span>#{successTransaction?.transactionId || 'N/A'}</span>
                                 </div>
                                 <div className="detail-line">
                                     <span>Status</span>

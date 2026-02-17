@@ -13,11 +13,11 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     Page<Transaction> findByAccountId(Long accountId, Pageable pageable);
 
-    List<Transaction> findByAccountIdOrderByCreatedAtDesc(Long accountId);
+    List<Transaction> findByAccountIdOrderByIdDesc(Long accountId);
 
     List<Transaction> findByAccountIdAndCreatedAtBetween(Long accountId, LocalDateTime start, LocalDateTime end);
 
-    @org.springframework.data.jpa.repository.Query("SELECT t FROM Transaction t WHERE t.account.user.id = :userId ORDER BY t.createdAt DESC")
+    @org.springframework.data.jpa.repository.Query("SELECT t FROM Transaction t WHERE t.account.user.id = :userId ORDER BY t.id DESC")
     List<Transaction> findAllByUserId(@org.springframework.data.repository.query.Param("userId") Long userId);
 
     @org.springframework.data.jpa.repository.Modifying

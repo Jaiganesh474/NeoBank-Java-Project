@@ -134,6 +134,8 @@ public class AccountService {
         transaction.setDescription(request.getDescription());
         transaction.setStatus(Transaction.TransactionStatus.COMPLETED);
         Transaction savedTransaction = transactionRepository.save(transaction);
+        System.out.println("DEBUG: Created DEBIT transaction: " + savedTransaction.getTransactionId() + " for user: "
+                + fromAccount.getUser().getEmail());
 
         // Mirror transaction for recipient
         Transaction creditTransaction = new Transaction();
@@ -148,7 +150,9 @@ public class AccountService {
         creditTransaction.setDescription(
                 "Received from " + fromAccount.getUser().getFirstName() + ": " + request.getDescription());
         creditTransaction.setStatus(Transaction.TransactionStatus.COMPLETED);
-        transactionRepository.save(creditTransaction);
+        Transaction savedCredit = transactionRepository.save(creditTransaction);
+        System.out.println("DEBUG: Created CREDIT transaction: " + savedCredit.getTransactionId() + " for user: "
+                + toAccount.getUser().getEmail());
 
         // Create structured notifications for real-time monitoring
         java.util.Map<String, Object> senderNotice = new java.util.HashMap<>();
@@ -214,7 +218,7 @@ public class AccountService {
             throw new RuntimeException("Unauthorized access to account transactions");
         }
 
-        return transactionRepository.findByAccountIdOrderByCreatedAtDesc(accountId);
+        return transactionRepository.findByAccountIdOrderByIdDesc(accountId);
     }
 
     public List<Transaction> getAllUserTransactions(UserPrincipal userPrincipal) {

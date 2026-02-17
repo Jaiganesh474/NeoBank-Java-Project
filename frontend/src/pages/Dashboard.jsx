@@ -83,6 +83,7 @@ const Dashboard = () => {
             // Fetch transactions for recent activity (using primary account)
             try {
                 const txRes = await api.get('/accounts/transactions');
+                console.log(`DEBUG: Dashboard fetched ${txRes.data.length} transactions`);
                 setAllTransactions(txRes.data);
                 if (accountsRes.data.length > 0) {
                     calculateGrowth(txRes.data, accountsRes.data);
