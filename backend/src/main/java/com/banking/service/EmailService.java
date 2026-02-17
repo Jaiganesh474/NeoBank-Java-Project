@@ -247,7 +247,7 @@ public class EmailService {
 
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Security");
-            helper.setSubject(subject + ": " + code);
+            helper.setSubject(subject + "To your NeoBank Online Banking App");
 
             String htmlContent = "<html><body style='font-family: -apple-system, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
                     +
