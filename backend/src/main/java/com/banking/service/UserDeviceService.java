@@ -16,7 +16,7 @@ public class UserDeviceService {
 
     private final UserDeviceRepository userDeviceRepository;
 
-    @Transactional
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
     public void recordDevice(User user, String refreshToken, HttpServletRequest request) {
         try {
             String userAgent = request.getHeader("User-Agent");

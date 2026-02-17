@@ -41,7 +41,7 @@ public class UserDevice {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private String refreshToken; // To identify the session uniquely
 
-    @Transient
+    @Column(nullable = false)
     private Boolean isCurrent = false;
 
     @CreationTimestamp
