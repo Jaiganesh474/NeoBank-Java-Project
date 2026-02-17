@@ -22,6 +22,7 @@ public class UserDevice {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private User user;
 
     @Column(nullable = false)
@@ -31,6 +32,7 @@ public class UserDevice {
 
     private String os;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String ipAddress;
 
     private String location;
@@ -39,7 +41,7 @@ public class UserDevice {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private String refreshToken; // To identify the session uniquely
 
-    @Column(nullable = false)
+    @Transient
     private Boolean isCurrent = false;
 
     @CreationTimestamp

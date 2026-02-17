@@ -155,9 +155,10 @@ const Settings = () => {
         setDevicesLoading(true);
         try {
             const res = await UserService.getDevices();
-            setDevices(res.data);
+            setDevices(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error("Failed to fetch devices");
+            setDevices([]);
         } finally {
             setDevicesLoading(false);
         }

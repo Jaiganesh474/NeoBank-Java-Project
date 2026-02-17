@@ -43,7 +43,7 @@ public class UserDeviceService {
 
     public List<UserDevice> getUserDevices(Long userId) {
         System.out.println("Fetching devices for userId: " + userId);
-        return userDeviceRepository.findByUser_IdOrderByLoginTimeDesc(userId);
+        return userDeviceRepository.findByUserIdCustom(userId);
     }
 
     @Transactional
@@ -59,14 +59,14 @@ public class UserDeviceService {
     @Transactional
     public void logoutAllOtherDevices(Long userId, String currentRefreshToken) {
         userDeviceRepository.findByRefreshToken(currentRefreshToken).ifPresent(current -> {
-            userDeviceRepository.deleteByUser_IdAndIdNot(userId, current.getId());
+            userDeviceRepository.deleteOtherDevices(userId, current.getId());
             System.out.println("Logged out all other devices for user: " + userId);
         });
     }
 
     @Transactional
     public void logoutAllDevices(Long userId) {
-        userDeviceRepository.deleteByUser_Id(userId);
+        userDeviceRepository.deleteAllUserDevices(userId);
         System.out.println("Logged out all devices for user: " + userId);
     }
 

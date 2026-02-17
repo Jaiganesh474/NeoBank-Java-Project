@@ -22,9 +22,14 @@ public class UserDeviceController {
     public ResponseEntity<List<UserDevice>> getDevices(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestParam(required = false) String currentRefreshToken) {
+        System.out.println(
+                "DEBUG: Fetching devices for user: " + userPrincipal.getId() + " - " + userPrincipal.getEmail());
         List<UserDevice> devices = userDeviceService.getUserDevices(userPrincipal.getId());
+        System.out.println("DEBUG: Found " + (devices != null ? devices.size() : 0) + " devices");
 
         if (currentRefreshToken != null) {
+            System.out.println("DEBUG: Comparing with currentRefreshToken: "
+                    + (currentRefreshToken.length() > 10 ? currentRefreshToken.substring(0, 10) + "..." : "short"));
             devices.forEach(d -> {
                 if (currentRefreshToken.equals(d.getRefreshToken())) {
                     d.setIsCurrent(true);
