@@ -17,6 +17,12 @@ public class BankingSystemApplication {
         System.setProperty("java.net.preferIPv4Stack", "true");
         SpringApplication.run(BankingSystemApplication.class, args);
     }
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Asia/Kolkata"));
+        System.out.println("Application started in IST TimeZone: " + java.time.LocalDateTime.now());
+    }
 }
 
 @Component

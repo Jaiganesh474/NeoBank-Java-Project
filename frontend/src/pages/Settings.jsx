@@ -1155,7 +1155,7 @@ const Settings = () => {
                                                                 <span>{device.location}</span>
                                                             </p>
                                                             <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.7 }}>
-                                                                Last active: {new Date(device.lastActive).toLocaleString()}
+                                                                Last active: {new Date(device.lastActive).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                                                             </p>
                                                         </div>
                                                         {!isCurrent && (

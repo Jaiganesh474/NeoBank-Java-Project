@@ -50,7 +50,7 @@ const Dashboard = () => {
             id: tx.id || idx,
             type: tx.type,
             recipient: tx.recipientName || tx.recipientAccountNumber || 'Transaction',
-            date: new Date(tx.createdAt).toLocaleString('en-US', {
+            date: new Date(tx.createdAt).toLocaleString('en-IN', {
                 month: 'short',
                 day: 'numeric',
                 hour: '2-digit',
@@ -548,7 +548,7 @@ const Dashboard = () => {
                                         domain={['dataMin', 'dataMax']}
                                         tickFormatter={(t) => {
                                             const d = new Date(t);
-                                            return `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+                                            return `${d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })} ${d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
                                         }}
                                         stroke="var(--text-muted)"
                                         fontSize={12}
@@ -569,7 +569,7 @@ const Dashboard = () => {
                                             border: '1px solid var(--surface-border)',
                                             boxShadow: 'var(--card-shadow)'
                                         }}
-                                        labelFormatter={(label) => new Date(label).toLocaleString('en-US', {
+                                        labelFormatter={(label) => new Date(label).toLocaleString('en-IN', {
                                             month: 'short',
                                             day: 'numeric',
                                             hour: '2-digit',

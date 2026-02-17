@@ -33,8 +33,8 @@ public class EmailService {
             helper.setFrom(fromEmail, "NeoBank Alerts");
             helper.setSubject("Debit Alert: from NeoBank (A/c:" + maskedUser + ")");
 
-            String time = java.time.LocalDateTime.now()
-                    .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"));
+            String time = java.time.ZonedDateTime.now(java.time.ZoneId.of("Asia/Kolkata"))
+                    .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")) + " IST";
 
             String htmlContent = "<html><body style='font-family: -apple-system, sans-serif; background-color: #f1f5f9; padding: 20px; margin: 0;'>"
                     +
@@ -106,8 +106,8 @@ public class EmailService {
             helper.setFrom(fromEmail, "NeoBank Alerts");
             helper.setSubject("Credit Alert: from NeoBank (A/c:" + maskedUser + ")");
 
-            String time = java.time.LocalDateTime.now()
-                    .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"));
+            String time = java.time.ZonedDateTime.now(java.time.ZoneId.of("Asia/Kolkata"))
+                    .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")) + " IST";
 
             String htmlContent = "<html><body style='font-family: -apple-system, sans-serif; background-color: #f1f5f9; padding: 20px; margin: 0;'>"
                     +
