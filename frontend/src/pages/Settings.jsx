@@ -1152,8 +1152,6 @@ const Settings = () => {
                                                             </div>
                                                             <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                                                 <span>{device.location}</span>
-                                                                <span>•</span>
-                                                                <span>{device.ipAddress}</span>
                                                             </p>
                                                             <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.7 }}>
                                                                 Last active: {new Date(device.lastActive).toLocaleString()}

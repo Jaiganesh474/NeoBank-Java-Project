@@ -18,26 +18,32 @@ public class UserDeviceService {
 
     @Transactional
     public void recordDevice(User user, String refreshToken, HttpServletRequest request) {
-        String userAgent = request.getHeader("User-Agent");
-        String ipAddress = getClientIp(request);
+        try {
+            String userAgent = request.getHeader("User-Agent");
+            String ipAddress = getClientIp(request);
 
-        UserDevice device = new UserDevice();
-        device.setUser(user);
-        device.setRefreshToken(refreshToken);
-        device.setIpAddress(ipAddress);
-        device.setLastActive(java.time.LocalDateTime.now());
+            UserDevice device = new UserDevice();
+            device.setUser(user);
+            device.setRefreshToken(refreshToken);
+            device.setIpAddress(ipAddress);
+            device.setLastActive(java.time.LocalDateTime.now());
 
-        // Basic User Agent Parsing
-        parseUserAgent(userAgent, device);
+            // Basic User Agent Parsing
+            parseUserAgent(userAgent, device);
 
-        // Default location (could be enhanced with IP geolocation API)
-        device.setLocation("Unknown Location");
+            // Default location (could be enhanced with IP geolocation API)
+            device.setLocation("Unknown Location");
 
-        userDeviceRepository.save(device);
+            userDeviceRepository.save(device);
+            System.out.println("Recorded device for user: " + user.getEmail() + " - " + device.getDeviceName());
+        } catch (Exception e) {
+            System.err.println("Failed to record device for user: " + user.getEmail() + " - " + e.getMessage());
+        }
     }
 
     public List<UserDevice> getUserDevices(Long userId) {
-        return userDeviceRepository.findByUserIdOrderByLoginTimeDesc(userId);
+        System.out.println("Fetching devices for userId: " + userId);
+        return userDeviceRepository.findByUser_IdOrderByLoginTimeDesc(userId);
     }
 
     @Transactional
@@ -45,6 +51,7 @@ public class UserDeviceService {
         userDeviceRepository.findById(deviceId).ifPresent(device -> {
             if (device.getUser().getId().equals(userId)) {
                 userDeviceRepository.delete(device);
+                System.out.println("Logged out device: " + deviceId + " for user: " + userId);
             }
         });
     }
@@ -52,13 +59,15 @@ public class UserDeviceService {
     @Transactional
     public void logoutAllOtherDevices(Long userId, String currentRefreshToken) {
         userDeviceRepository.findByRefreshToken(currentRefreshToken).ifPresent(current -> {
-            userDeviceRepository.deleteByUserIdAndIdNot(userId, current.getId());
+            userDeviceRepository.deleteByUser_IdAndIdNot(userId, current.getId());
+            System.out.println("Logged out all other devices for user: " + userId);
         });
     }
 
     @Transactional
     public void logoutAllDevices(Long userId) {
-        userDeviceRepository.deleteByUserId(userId);
+        userDeviceRepository.deleteByUser_Id(userId);
+        System.out.println("Logged out all devices for user: " + userId);
     }
 
     private String getClientIp(HttpServletRequest request) {

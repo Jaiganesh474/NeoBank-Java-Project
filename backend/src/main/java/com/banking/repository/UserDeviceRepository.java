@@ -9,13 +9,13 @@ import java.util.Optional;
 
 @Repository
 public interface UserDeviceRepository extends JpaRepository<UserDevice, Long> {
-    List<UserDevice> findByUserIdOrderByLoginTimeDesc(Long userId);
+    List<UserDevice> findByUser_IdOrderByLoginTimeDesc(Long userId);
 
     Optional<UserDevice> findByRefreshToken(String refreshToken);
 
     void deleteByRefreshToken(String refreshToken);
 
-    void deleteByUserIdAndIdNot(Long userId, Long currentDeviceId);
+    void deleteByUser_IdAndIdNot(Long userId, Long currentDeviceId);
 
-    void deleteByUserId(Long userId);
+    void deleteByUser_Id(Long userId);
 }
