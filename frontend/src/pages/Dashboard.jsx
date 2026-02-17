@@ -55,7 +55,7 @@ const Dashboard = () => {
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-                hour12: true
+                hour12: false
             }),
             amount: amount,
             status: tx.status
@@ -575,7 +575,8 @@ const Dashboard = () => {
                                             day: 'numeric',
                                             hour: '2-digit',
                                             minute: '2-digit',
-                                            year: 'numeric'
+                                            year: 'numeric',
+                                            hour12: false
                                         })}
                                         itemStyle={{ color: 'var(--primary)', fontWeight: 700 }}
                                         formatter={(value) => [showBalance ? `₹${Number(value).toLocaleString()}` : '••••', 'Balance']}

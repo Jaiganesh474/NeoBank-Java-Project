@@ -169,7 +169,7 @@ const Transactions = () => {
                                         <div className="item-info">
                                             <p className="item-title tx-title-mobile">{tx.recipientName || tx.recipient || 'Transaction'}</p>
                                             <span className="item-subtitle tx-subtitle-mobile">
-                                                {new Date(tx.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} at {new Date(tx.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })} • {getUserFriendlyType(tx.type, tx.amount)}
+                                                {new Date(tx.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} at {new Date(tx.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false })} • {getUserFriendlyType(tx.type, tx.amount)}
                                                 {tx.description && <span style={{ marginLeft: '0.5rem', opacity: 0.8 }} className="tx-desc-mobile">— {tx.description}</span>}
                                             </span>
                                             {tx.transactionId && <span className="item-subtitle tx-id-mobile" style={{ fontSize: '0.75rem', marginTop: '0.2rem', display: 'block' }}>ID: {tx.transactionId}</span>}
