@@ -33,46 +33,52 @@ public class EmailService {
             helper.setFrom(fromEmail, "NeoBank Alerts");
             helper.setSubject("Debit Alert: from NeoBank (A/c:" + maskedUser + ")");
 
-            
+            String time = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"));
 
-            String htmlContent = "<html><body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
+            String htmlContent = "<html><body style='font-family: -apple-system, sans-serif; background-color: #f1f5f9; padding: 20px; margin: 0;'>"
                     +
                     "<div style='max-width: 600px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
                     +
-                    "<div style='background: #ef4444; padding: 40px; text-align: center;'>" +
-                    "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Amount Debited from your account ending with " + maskedUser + "</h1>" +
+                    "<div style='background: #ef4444; padding: 30px 20px; text-align: center;'>" +
+                    "<h1 style='color: white; margin: 0; font-size: 22px; font-weight: 800; line-height: 1.4;'>Amount Debited from A/c "
+                    + maskedUser + "</h1>" +
                     "</div>" +
-                    "<div style='padding: 40px;'>" +
+                    "<div style='padding: 30px 20px;'>" +
                     "<p style='color: #64748b; font-size: 16px; margin-top: 0;'>Dear " + firstName + ",</p>" +
-                    "<p style='color: #1e293b; font-size: 16px; line-height: 1.6;'>Your NeoBank account <strong>"
-                    + maskedUser + "</strong> has been <strong>debited</strong> for a transfer to a account linked to " + recipient
+                    "<p style='color: #1e293b; font-size: 15px; line-height: 1.6;'>Your NeoBank account <strong>"
+                    + maskedUser + "</strong> has been <strong>debited</strong> for ₹" + amount + " for a transfer to "
+                    + recipient
                     + ".</p>"
                     +
-                    "<div style='background: #f8fafc; border-radius: 16px; padding: 24px; margin: 30px 0; border: 1px solid #e2e8f0;'>"
+                    "<div style='background: #f8fafc; border-radius: 16px; padding: 20px; margin: 25px 0; border: 1px solid #e2e8f0;'>"
                     +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount </span> <span style='color: #ef4444; font-weight: 700; font-size: 18px;'> ₹"
-                    + amount + "</span></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>To Account </span> <strong style='color: #1e293b;'> "
-                    + recipient + " (" + maskedPartner + ")</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance </span> <strong style='color: #1e293b; font-size: 16px;'> ₹"
-                    + balance + "</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID </span> <code style='color: #475569;'>"
-                    + transactionId + "</code></div>" +
-                    "<div style='display: flex; justify-content: space-between; font-size: 14px; color: #64748b;'><span>Time </span> <span style='color: #1e293b;'>"
-                    + java.time.LocalDateTime.now()
-                            .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"))
-                    + "</span></div>" +
+                    "<table width='100%' cellpadding='0' cellspacing='0' style='border-collapse: collapse;'>" +
+                    "<tr><td style='padding: 8px 0; font-size: 14px; color: #64748b;'>Amount</td><td align='right' style='padding: 8px 0; color: #ef4444; font-weight: 700; font-size: 18px;'>₹"
+                    + amount + "</td></tr>" +
+                    "<tr><td style='padding: 8px 0; font-size: 14px; color: #64748b; vertical-align: top;'>To</td><td align='right' style='padding: 8px 0; color: #1e293b; font-weight: 600; font-size: 14px;'>"
+                    + recipient + "<br><span style='font-weight: 400; color: #64748b; font-size: 12px;'>("
+                    + maskedPartner + ")</span></td></tr>" +
+                    "<tr><td style='padding: 8px 0; font-size: 14px; color: #64748b;'>Balance</td><td align='right' style='padding: 8px 0; color: #1e293b; font-weight: 700; font-size: 15px;'>₹"
+                    + balance + "</td></tr>" +
+                    "<tr><td colspan='2' style='padding: 15px 0 5px 0; border-top: 1px solid #edf2f7; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;'>Transaction ID</td></tr>"
+                    +
+                    "<tr><td colspan='2' style='padding: 0 0 10px 0; font-family: monospace; font-size: 12px; color: #475569; word-break: break-all;'>"
+                    + transactionId + "</td></tr>" +
+                    "<tr><td style='padding: 8px 0; font-size: 14px; color: #64748b;'>Date</td><td align='right' style='padding: 8px 0; color: #1e293b; font-size: 13px;'>"
+                    + time + "</td></tr>" +
+                    "</table>" +
                     "</div>" +
-                    "<p style='color: #64748b; font-size: 14px; line-height: 1.6;'>If this wasn't you, please lock your account immediately from the security settings or contact our support team.</p>"
+                    "<p style='color: #64748b; font-size: 13px; line-height: 1.6; text-align: center;'>If this transaction was not authorized by you, please block your account immediately.</p>"
                     +
-                    "<div style='text-align: center; margin-top: 40px;'>" +
-                    "<a href='https://neobank-v8jw.onrender.com/' style='background: #1e293b; color: white; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 15px;'>Support Center</a>"
+                    "<div style='text-align: center; margin-top: 30px;'>" +
+                    "<a href='https://neobank-v8jw.onrender.com/' style='background: #1e293b; color: white; padding: 12px 25px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block;'>Support Center</a>"
                     +
                     "</div>" +
                     "</div>" +
-                    "<div style='background: #f8fafc; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8;'>"
+                    "<div style='background: #f8fafc; padding: 20px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0;'>"
                     +
-                    "© 2026 NeoBank | Powered by Intelligence. All rights reserved." +
+                    "© 2026 NeoBank | Security First. All rights reserved." +
                     "</div>" +
                     "</div>" +
                     "</body></html>";
@@ -93,50 +99,58 @@ public class EmailService {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
                     message, false, "UTF-8");
-            
+
             String maskedUser = maskAccountNumber(userAcc);
             String maskedPartner = maskAccountNumber(partnerAcc);
             helper.setTo(to);
             helper.setFrom(fromEmail, "NeoBank Alerts");
             helper.setSubject("Credit Alert: from NeoBank (A/c:" + maskedUser + ")");
 
-            String htmlContent = "<html><body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; padding: 20px;'>"
+            String time = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"));
+
+            String htmlContent = "<html><body style='font-family: -apple-system, sans-serif; background-color: #f1f5f9; padding: 20px; margin: 0;'>"
                     +
                     "<div style='max-width: 600px; margin: 0 auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
                     +
-                    "<div style='background: #10b981; padding: 40px; text-align: center;'>" +
-                    "<h1 style='color: white; margin: 0; font-size: 28px; font-weight: 800;'>Amount Credited to your account ending with " + maskedUser + "</h1>" +
+                    "<div style='background: #10b981; padding: 30px 20px; text-align: center;'>" +
+                    "<h1 style='color: white; margin: 0; font-size: 22px; font-weight: 800; line-height: 1.4;'>Amount Credited to A/c "
+                    + maskedUser + "</h1>" +
                     "</div>" +
-                    "<div style='padding: 40px;'>" +
+                    "<div style='padding: 30px 20px;'>" +
                     "<p style='color: #64748b; font-size: 16px; margin-top: 0;'>Hi " + firstName + ",</p>" +
-                    "<p style='color: #1e293b; font-size: 16px; line-height: 1.6;'>Great news! Your NeoBank account <strong>"
-                    + maskedUser + "</strong> has been <strong>credited</strong> with money from " + sender + ".</p>"
+                    "<p style='color: #1e293b; font-size: 15px; line-height: 1.6;'>Great news! Your NeoBank account <strong>"
+                    + maskedUser + "</strong> has been <strong>credited</strong> with ₹" + amount + " from " + sender
+                    + ".</p>"
                     +
-                    "<div style='background: #f8fafc; border-radius: 16px; padding: 24px; margin: 30px 0; border: 1px solid #e2e8f0;'>"
+                    "<div style='background: #f8fafc; border-radius: 16px; padding: 20px; margin: 25px 0; border: 1px solid #e2e8f0;'>"
                     +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Amount </span> <span style='color: #10b981; font-weight: 700; font-size: 18px;'> ₹"
-                    + amount + "</span></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>From Account </span> <strong style='color: #1e293b;'>"
-                    + sender + " (" + maskedPartner + ")</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Available Balance </span> <strong style='color: #1e293b; font-size: 16px;'>₹"
-                    + balance + "</strong></div>" +
-                    "<div style='display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #64748b;'><span>Transaction ID </span> <code style='color: #475569;'>"
-                    + transactionId + "</code></div>" +
-                    "<div style='display: flex; justify-content: space-between; font-size: 14px; color: #64748b;'><span>Time </span> <span style='color: #1e293b;'>"
-                    + java.time.LocalDateTime.now()
-                            .format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"))
-                    + "</span></div>" +
+                    "<table width='100%' cellpadding='0' cellspacing='0' style='border-collapse: collapse;'>" +
+                    "<tr><td style='padding: 8px 0; font-size: 14px; color: #64748b;'>Amount</td><td align='right' style='padding: 8px 0; color: #10b981; font-weight: 700; font-size: 18px;'>₹"
+                    + amount + "</td></tr>" +
+                    "<tr><td style='padding: 8px 0; font-size: 14px; color: #64748b; vertical-align: top;'>From</td><td align='right' style='padding: 8px 0; color: #1e293b; font-weight: 600; font-size: 14px;'>"
+                    + sender + "<br><span style='font-weight: 400; color: #64748b; font-size: 12px;'>(" + maskedPartner
+                    + ")</span></td></tr>" +
+                    "<tr><td style='padding: 8px 0; font-size: 14px; color: #64748b;'>Balance</td><td align='right' style='padding: 8px 0; color: #1e293b; font-weight: 700; font-size: 15px;'>₹"
+                    + balance + "</td></tr>" +
+                    "<tr><td colspan='2' style='padding: 15px 0 5px 0; border-top: 1px solid #edf2f7; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;'>Transaction ID</td></tr>"
+                    +
+                    "<tr><td colspan='2' style='padding: 0 0 10px 0; font-family: monospace; font-size: 12px; color: #475569; word-break: break-all;'>"
+                    + transactionId + "</td></tr>" +
+                    "<tr><td style='padding: 8px 0; font-size: 14px; color: #64748b;'>Date</td><td align='right' style='padding: 8px 0; color: #1e293b; font-size: 13px;'>"
+                    + time + "</td></tr>" +
+                    "</table>" +
                     "</div>" +
-                    "<p style='color: #64748b; font-size: 14px; line-height: 1.6;'>The amount is now available in your balance.</p>"
+                    "<p style='color: #64748b; font-size: 13px; line-height: 1.6; text-align: center;'>The amount is now reflected in your total available balance.</p>"
                     +
-                    "<div style='text-align: center; margin-top: 40px;'>" +
-                    "<a href='https://neobank-v8jw.onrender.com/dashboard' style='background: #10b981; color: white; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 15px;'>Go to Dashboard</a>"
+                    "<div style='text-align: center; margin-top: 30px;'>" +
+                    "<a href='https://neobank-v8jw.onrender.com/dashboard' style='background: #10b981; color: white; padding: 12px 25px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block;'>Go to Dashboard</a>"
                     +
                     "</div>" +
                     "</div>" +
-                    "<div style='background: #f8fafc; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8;'>"
+                    "<div style='background: #f8fafc; padding: 20px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0;'>"
                     +
-                    "© 2026 NeoBank | Powered by Intelligence. All rights reserved." +
+                    "© 2026 NeoBank | Security First. All rights reserved." +
                     "</div>" +
                     "</div>" +
                     "</body></html>";
