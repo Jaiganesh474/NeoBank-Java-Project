@@ -4,6 +4,7 @@ export const login = async (email, password) => {
     const response = await api.post('auth/signin', { email, password });
     if (response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
         localStorage.setItem('user', JSON.stringify({
             id: response.data.id,
             email: response.data.email,
@@ -23,6 +24,7 @@ export const loginByPin = async (identifier, pin) => {
     const response = await api.post('auth/signin-pin', { identifier, pin });
     if (response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
         localStorage.setItem('user', JSON.stringify({
             id: response.data.id,
             email: response.data.email,
@@ -47,6 +49,7 @@ export const loginByOtp = async (phoneNumber, otp) => {
     const response = await api.post('auth/signin-otp', { phoneNumber, otp });
     if (response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
         localStorage.setItem('user', JSON.stringify({
             id: response.data.id,
             email: response.data.email,
@@ -66,6 +69,7 @@ export const firebaseLogin = async (idToken) => {
     const response = await api.post('auth/firebase-signin', { idToken });
     if (response.data.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
         localStorage.setItem('user', JSON.stringify({
             id: response.data.id,
             email: response.data.email,
@@ -93,6 +97,7 @@ export const register = async (firstName, lastName, email, password) => {
 
 export const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
 };
 

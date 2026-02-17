@@ -46,6 +46,8 @@ public class AuthController {
         private final com.banking.service.AuthService customAuthService;
         private final JwtTokenProvider tokenProvider;
         private final PasswordEncoder passwordEncoder;
+        private final com.banking.service.UserDeviceService userDeviceService;
+        private final jakarta.servlet.http.HttpServletRequest httpServletRequest;
 
         @PostMapping("/signin")
         public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -73,6 +75,9 @@ public class AuthController {
 
                 user.setLastLogin(java.time.LocalDateTime.now());
                 userRepository.save(user);
+
+                // Record Device
+                userDeviceService.recordDevice(user, refreshToken, httpServletRequest);
 
                 return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, refreshToken,
                                 userPrincipal.getId(),
@@ -120,6 +125,9 @@ public class AuthController {
                 String lastLoginStr = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
                 user.setLastLogin(java.time.LocalDateTime.now());
                 userRepository.save(user);
+
+                // Record Device
+                userDeviceService.recordDevice(user, refreshToken, httpServletRequest);
 
                 return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, refreshToken,
                                 userPrincipal.getId(),
@@ -169,6 +177,9 @@ public class AuthController {
                         String lastLoginStr = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
                         user.setLastLogin(java.time.LocalDateTime.now());
                         userRepository.save(user);
+
+                        // Record Device
+                        userDeviceService.recordDevice(user, refreshToken, httpServletRequest);
 
                         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, refreshToken,
                                         userPrincipal.getId(),
@@ -232,6 +243,9 @@ public class AuthController {
                         String lastLoginStr = user.getLastLogin() != null ? user.getLastLogin().toString() : null;
                         user.setLastLogin(java.time.LocalDateTime.now());
                         userRepository.save(user);
+
+                        // Record Device
+                        userDeviceService.recordDevice(user, refreshToken, httpServletRequest);
 
                         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, refreshToken,
                                         userPrincipal.getId(),

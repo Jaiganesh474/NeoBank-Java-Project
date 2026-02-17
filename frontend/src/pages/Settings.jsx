@@ -147,6 +147,51 @@ const Settings = () => {
     const [notifPush, setNotifPush] = useState(false);
     const [notifMarketing, setNotifMarketing] = useState(false);
 
+    // Devices State
+    const [devices, setDevices] = useState([]);
+    const [devicesLoading, setDevicesLoading] = useState(false);
+
+    const fetchDevices = async () => {
+        setDevicesLoading(true);
+        try {
+            const res = await UserService.getDevices();
+            setDevices(res.data);
+        } catch (err) {
+            console.error("Failed to fetch devices");
+        } finally {
+            setDevicesLoading(false);
+        }
+    };
+
+    React.useEffect(() => {
+        if (activeTab === 'devices') {
+            fetchDevices();
+        }
+    }, [activeTab]);
+
+    const handleLogoutDevice = async (deviceId) => {
+        if (!window.confirm("Logout this device?")) return;
+        try {
+            await UserService.logoutDevice(deviceId);
+            toast.success("Device logged out");
+            fetchDevices();
+        } catch (err) {
+            toast.error("Failed to logout device");
+        }
+    };
+
+    const handleLogoutOtherDevices = async () => {
+        if (!window.confirm("Logout all other devices?")) return;
+        try {
+            const refreshToken = localStorage.getItem('refreshToken');
+            await UserService.logoutOtherDevices(refreshToken);
+            toast.success("Other devices logged out");
+            fetchDevices();
+        } catch (err) {
+            toast.error("Failed to logout other devices");
+        }
+    };
+
     React.useEffect(() => {
         const fetchNotifs = async () => {
             try {
@@ -1056,36 +1101,109 @@ const Settings = () => {
                                 <h2 style={{ marginBottom: '1.5rem', fontSize: '1.6rem', fontWeight: '800' }}>Logged-in Devices</h2>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                    <div style={{ padding: '1.5rem', background: 'var(--primary-light)', borderRadius: '24px', border: '1px solid rgba(var(--primary-rgb), 0.1)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                                        <div style={{ width: '50px', height: '50px', background: 'var(--primary)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.25rem' }}>
-                                            <FaDesktop />
+                                    {devicesLoading ? (
+                                        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>Syncing active sessions...</div>
+                                    ) : devices.length === 0 ? (
+                                        <div style={{ textAlign: 'center', padding: '2.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)' }}>
+                                            <p style={{ color: 'var(--text-muted)' }}>No active sessions found.</p>
                                         </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                <h4 style={{ margin: 0, fontSize: '1.1rem' }}>Windows Desktop • Chrome</h4>
-                                                <span style={{ fontSize: '0.65rem', padding: '3px 8px', background: 'var(--primary)', color: 'white', borderRadius: '100px', fontWeight: 800 }}>CURRENT</span>
-                                            </div>
-                                            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>San Francisco, USA • 192.168.1.1</p>
-                                        </div>
-                                    </div>
+                                    ) : (
+                                        <>
+                                            {devices.map((device) => {
+                                                const isCurrent = device.isCurrent;
+                                                const isMobile = device.os === 'Android' || device.os === 'iOS';
 
-                                    <div style={{ padding: '1.5rem', background: 'var(--input-bg)', borderRadius: '24px', border: '1px solid var(--surface-border)', display: 'flex', alignItems: 'center', gap: '1.5rem', opacity: 0.8 }}>
-                                        <div style={{ width: '50px', height: '50px', background: 'var(--text-muted)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.25rem' }}>
-                                            <FaHistory />
-                                        </div>
-                                        <div style={{ flex: 1 }}>
-                                            <h4 style={{ margin: 0, fontSize: '1.1rem' }}>iPhone 15 Pro • Safari</h4>
-                                            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Yesterday, 10:45 PM • Mobile App</p>
-                                        </div>
-                                        <button style={{ background: 'none', border: 'none', color: 'var(--error)', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>Logout</button>
-                                    </div>
+                                                return (
+                                                    <div
+                                                        key={device.id}
+                                                        style={{
+                                                            padding: '1.5rem',
+                                                            background: isCurrent ? 'var(--primary-light)' : 'var(--input-bg)',
+                                                            borderRadius: '24px',
+                                                            border: isCurrent ? '1px solid rgba(var(--primary-rgb), 0.1)' : '1px solid var(--surface-border)',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '1.5rem',
+                                                            opacity: isCurrent ? 1 : 0.85,
+                                                            transition: 'all 0.3s'
+                                                        }}
+                                                    >
+                                                        <div style={{
+                                                            width: '50px',
+                                                            height: '50px',
+                                                            background: isCurrent ? 'var(--primary)' : 'var(--text-muted)',
+                                                            borderRadius: '14px',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            color: 'white',
+                                                            fontSize: '1.25rem'
+                                                        }}>
+                                                            {isMobile ? <FaHistory title="Mobile Device" /> : <FaDesktop title="Desktop Device" />}
+                                                        </div>
+                                                        <div style={{ flex: 1 }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                                                                <h4 style={{ margin: 0, fontSize: '1.1rem' }}>
+                                                                    {device.deviceName} • {device.browser}
+                                                                </h4>
+                                                                {isCurrent && (
+                                                                    <span style={{ fontSize: '0.65rem', padding: '3px 8px', background: 'var(--primary)', color: 'white', borderRadius: '100px', fontWeight: 800 }}>CURRENT</span>
+                                                                )}
+                                                            </div>
+                                                            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                                <span>{device.location}</span>
+                                                                <span>•</span>
+                                                                <span>{device.ipAddress}</span>
+                                                            </p>
+                                                            <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.7 }}>
+                                                                Last active: {new Date(device.lastActive).toLocaleString()}
+                                                            </p>
+                                                        </div>
+                                                        {!isCurrent && (
+                                                            <button
+                                                                onClick={() => handleLogoutDevice(device.id)}
+                                                                style={{
+                                                                    background: 'rgba(239, 68, 68, 0.05)',
+                                                                    border: 'none',
+                                                                    color: 'var(--error)',
+                                                                    fontWeight: 700,
+                                                                    cursor: 'pointer',
+                                                                    fontSize: '0.85rem',
+                                                                    padding: '8px 16px',
+                                                                    borderRadius: '12px',
+                                                                    transition: 'all 0.2s'
+                                                                }}
+                                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+                                                                onMouseLeave={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.05)'}
+                                                            >
+                                                                Logout
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
 
-                                    <button className="btn-premium" style={{ border: '1.5px solid var(--error)', color: 'var(--error)', background: 'transparent', marginTop: '1rem', height: '50px' }} onClick={logout}>
-                                        Sign Out from All Devices
-                                    </button>
+                                            <button
+                                                className="btn-premium"
+                                                style={{
+                                                    border: '1.5px solid var(--error)',
+                                                    color: 'var(--error)',
+                                                    background: 'transparent',
+                                                    marginTop: '1rem',
+                                                    height: '50px',
+                                                    fontSize: '0.95rem',
+                                                    fontWeight: '700'
+                                                }}
+                                                onClick={handleLogoutOtherDevices}
+                                            >
+                                                Sign Out from All Other Devices
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </motion.div>
                         )}
+
                     </div>
                 </div>
 

@@ -87,6 +87,19 @@ const updateNotificationSettings = async (settings) => {
     return api.put('users/notifications', settings);
 };
 
+const getDevices = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    return api.get(`user/devices?currentRefreshToken=${refreshToken}`);
+};
+
+const logoutDevice = async (id) => {
+    return api.delete(`user/devices/${id}`);
+};
+
+const logoutOtherDevices = async (refreshToken) => {
+    return api.delete('user/devices/others', { refreshToken });
+};
+
 const UserService = {
     sendUpdateOtp,
     updateProfile,
@@ -107,7 +120,10 @@ const UserService = {
     changeLoginPin,
     changeTpin,
     getNotificationSettings,
-    updateNotificationSettings
+    updateNotificationSettings,
+    getDevices,
+    logoutDevice,
+    logoutOtherDevices
 };
 
 export default UserService;
