@@ -19,6 +19,7 @@ const Footer = () => {
                         <span>NeoBank</span>
                     </div>
                     <p>The next generation of intelligent, premium digital banking for the modern world.</p>
+                    <p style={{ fontSize: '0.8rem', marginTop: '0.5rem', opacity: 0.7 }}>Simplifying your financial life with state-of-the-art security and elegant design.</p>
                     <div className="footer-badges" style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                         <div className="badge-item">
                             <FaShieldAlt style={{ color: 'var(--success)' }} />
@@ -31,33 +32,33 @@ const Footer = () => {
                     <div className="link-group">
                         <h4>Company</h4>
                         <ul>
-                            <li><Link to="/about">About Us</Link></li>
-                            <li><Link to="/careers">Careers</Link></li>
-                            <li><Link to="/press">Press</Link></li>
+                            <li><Link to="/about" onClick={scrollToTop}>About Us</Link></li>
+                            <li><Link to="/careers" onClick={scrollToTop}>Careers</Link></li>
+                            <li><Link to="/press" onClick={scrollToTop}>Press</Link></li>
                         </ul>
                     </div>
                     <div className="link-group">
                         <h4>Products</h4>
                         <ul>
-                            <li><Link to="/cards">Neo Cards</Link></li>
-                            <li><Link to="/savings">Savings Plus</Link></li>
-                            <li><Link to="/loans">Personal Loans</Link></li>
+                            <li><Link to="/cards" onClick={scrollToTop}>Neo Cards</Link></li>
+                            <li><Link to="/savings" onClick={scrollToTop}>Savings Plus</Link></li>
+                            <li><Link to="/loans" onClick={scrollToTop}>Personal Loans</Link></li>
                         </ul>
                     </div>
                     <div className="link-group">
                         <h4>Security</h4>
                         <ul>
-                            <li><Link to="/data-privacy">Data Privacy</Link></li>
-                            <li><Link to="/fraud-care">Fraud Care</Link></li>
-                            <li><Link to="/insurance">Insurance</Link></li>
+                            <li><Link to="/data-privacy" onClick={scrollToTop}>Data Privacy</Link></li>
+                            <li><Link to="/fraud-care" onClick={scrollToTop}>Fraud Care</Link></li>
+                            <li><Link to="/insurance" onClick={scrollToTop}>Insurance</Link></li>
                         </ul>
                     </div>
                     <div className="link-group">
                         <h4>Support</h4>
                         <ul>
-                            <li><Link to="/help-center">Help Center</Link></li>
-                            <li><Link to="/contact-us">Contact Us</Link></li>
-                            <li><Link to="/api-docs">API Docs</Link></li>
+                            <li><Link to="/help-center" onClick={scrollToTop}>Help Center</Link></li>
+                            <li><Link to="/contact-us" onClick={scrollToTop}>Contact Us</Link></li>
+                            <li><Link to="/api-docs" onClick={scrollToTop}>API Docs</Link></li>
                         </ul>
                     </div>
                 </div>
@@ -88,8 +89,8 @@ const Footer = () => {
             <div className="footer-bottom">
                 <p>© 2026 NeoBank. Built with passion for excellence.</p>
                 <div className="legal-links">
-                    <Link to="/privacy-policy">Privacy Policy</Link>
-                    <Link to="/terms-of-service">Terms of Service</Link>
+                    <Link to="/privacy-policy" onClick={scrollToTop}>Privacy Policy</Link>
+                    <Link to="/terms-of-service" onClick={scrollToTop}>Terms of Service</Link>
                 </div>
             </div>
         </footer>
