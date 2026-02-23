@@ -3,6 +3,60 @@
     padding-bottom: 6rem;
 }
 
+.account-details-container {
+    perspective: 2000px;
+}
+
+.account-details-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2.5rem;
+    transform-style: preserve-3d;
+}
+
+.primary-info-card {
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    box-shadow: 0 30px 60px -15px rgba(var(--primary-rgb), 0.3);
+}
+
+.primary-info-card h2 {
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -2px;
+}
+
+.balance-display .stat-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+}
+
+.metadata-card {
+    background: var(--surface);
+}
+
+.metadata-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.info-item {
+    padding: 1rem;
+    background: var(--surface-light);
+    border-radius: 16px;
+    border: 1px solid var(--surface-border);
+}
+
+.info-item p {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
 @media (max-width: 1024px) {
     .account-details-grid {
         grid-template-columns: 1fr !important;
@@ -18,7 +72,7 @@
 
 @media (max-width: 640px) {
     .account-details-header h1 {
-        font-size: 2rem !important;
+        font-size: 2.5rem !important;
         margin-top: 0.5rem;
     }
 
@@ -30,33 +84,5 @@
     .metadata-grid {
         grid-template-columns: 1fr 1fr !important;
         gap: 1.25rem 1rem !important;
-    }
-
-    .info-item p {
-        font-size: 0.95rem !important;
-    }
-
-    .transaction-item {
-        padding: 0.85rem !important;
-    }
-
-    .transaction-item .mini-icon {
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 1rem !important;
-    }
-
-    .transaction-item .item-title {
-        font-size: 0.9rem !important;
-    }
-
-    .transaction-item .item-amount {
-        font-size: 0.95rem !important;
-    }
-}
-
-@media (max-width: 400px) {
-    .metadata-grid {
-        grid-template-columns: 1fr !important;
     }
 }

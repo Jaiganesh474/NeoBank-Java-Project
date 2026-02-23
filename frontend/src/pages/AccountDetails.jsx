@@ -76,25 +76,25 @@ const AccountDetails = () => {
             <Navbar />
 
             <main className="dashboard-content account-details-main">
-                <header className="dashboard-header account-details-header" style={{ marginBottom: '2rem' }}>
+                <header className="dashboard-header account-details-header">
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                         <button
                             onClick={() => navigate('/dashboard')}
-                            className="text-btn"
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--primary)', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600 }}
+                            className="back-btn-v2"
+                            style={{ width: 'fit-content', padding: '0.5rem 1rem', marginBottom: '1.5rem' }}
                         >
-                            <FaArrowLeft /> Back to Dashboard
+                            <FaArrowLeft /> Back
                         </button>
                         <h1>{account.accountType}</h1>
                         <p>Detailed insights for your wallet ending in {account.accountNumber.slice(-4)}</p>
                     </motion.div>
                 </header>
 
-                <div className="dashboard-grid account-details-grid">
+                <div className="account-details-grid">
                     {/* Primary Info Card */}
-                    <div className="glass-panel stat-card-total primary-info-card" style={{ gridColumn: 'span 6', minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div className="glass-panel primary-info-card" style={{ gridColumn: 'span 6' }}>
                         <div className="balance-display">
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <div className="panel-header" style={{ marginBottom: 0 }}>
                                 <span className="stat-label">Available Balance</span>
                                 <button
                                     onClick={(e) => {
@@ -106,43 +106,30 @@ const AccountDetails = () => {
                                             return newVal;
                                         });
                                     }}
-                                    style={{
-                                        background: 'rgba(255,255,255,0.2)',
-                                        border: 'none',
-                                        color: 'white',
-                                        padding: '10px',
-                                        borderRadius: '12px',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        position: 'relative',
-                                        zIndex: 100,
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                    onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                                    onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                                    className="theme-toggle-btn"
+                                    style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white' }}
                                     title={showBalance ? "Hide Balance" : "Show Balance"}
                                 >
                                     {showBalance ? <FaEyeSlash /> : <FaEye />}
                                 </button>
                             </div>
-                            <h2 style={{ fontSize: '3rem', fontWeight: 900, marginTop: '0.5rem' }}>
+                            <h2 className="stat-value" style={{ margin: '0.5rem 0' }}>
                                 {showBalance ? `₹${Number(account.balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '••••••'}
                             </h2>
                         </div>
 
-                        <div className="acc-number-row" style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '16px', padding: '1.2rem', marginTop: '1.5rem' }}>
+                        <div className="acc-number-row" style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '20px', padding: '1.5rem', marginTop: '1rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
-                                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.7, letterSpacing: '0.05em' }}>Account Number</span>
-                                    <p style={{ fontSize: '1.2rem', fontWeight: 700, fontFamily: 'monospace', letterSpacing: '0.1em' }}>
+                                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', opacity: 0.8, letterSpacing: '0.05em', fontWeight: 700 }}>Account Number</span>
+                                    <p style={{ fontSize: '1.25rem', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.1em', marginTop: '0.2rem' }}>
                                         {showAccountNumber ? account.accountNumber : `•••• •••• ${account.accountNumber.slice(-4)}`}
                                     </p>
                                 </div>
                                 <button
                                     onClick={() => setShowAccountNumber(!showAccountNumber)}
-                                    style={{ background: 'white', color: 'var(--primary)', border: 'none', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                    className="theme-toggle-btn"
+                                    style={{ background: 'white', color: 'var(--primary)' }}
                                 >
                                     {showAccountNumber ? <FaEyeSlash /> : <FaEye />}
                                 </button>
