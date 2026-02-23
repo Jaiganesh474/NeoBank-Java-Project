@@ -1,3 +1,5 @@
+/* Dashboard.css - Pro Dashboard with 3D Depth */
+
 .dashboard-container {
     min-height: 100vh;
     background-color: var(--background);
@@ -18,7 +20,7 @@
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 3.5rem;
-    transform: translateZ(20px);
+    transform: translateZ(50px);
 }
 
 .dashboard-header h1 {
@@ -33,6 +35,30 @@
     -webkit-text-fill-color: transparent;
 }
 
+.dashboard-header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.add-btn {
+    padding: 0.8rem 1.6rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 10px 20px rgba(var(--primary-rgb), 0.2);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.add-btn:hover {
+    transform: translateY(-5px) translateZ(10px);
+    box-shadow: 0 15px 30px rgba(var(--primary-rgb), 0.3);
+}
+
 /* Dashboard Grid */
 .dashboard-grid {
     display: grid;
@@ -41,23 +67,36 @@
     transform-style: preserve-3d;
 }
 
-/* Stat Card Total - 3D */
+/* Glass Panels */
+.glass-panel {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: 40px;
+    padding: 2.5rem;
+    box-shadow: var(--card-shadow);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+}
+
+.glass-panel:hover {
+    transform: translateY(-10px) translateZ(20px);
+    border-color: var(--primary);
+    box-shadow: var(--depth-shadow);
+}
+
+/* Total Balance Card */
 .stat-card-total {
     grid-column: span 4;
     background: var(--accent-gradient);
     color: white;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding: 2.5rem;
     border-radius: 40px;
     box-shadow: 0 30px 60px -15px rgba(37, 99, 235, 0.3);
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-    transform-style: preserve-3d;
-}
-
-.stat-card-total:hover {
-    transform: translateY(-10px) rotateX(5deg) rotateY(-5deg);
-    box-shadow: 0 40px 80px -20px rgba(37, 99, 235, 0.4);
 }
 
 .stat-value {
@@ -68,7 +107,21 @@
     text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Neo Credit Card Container */
+.stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 800;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    width: fit-content;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    transform: translateZ(20px);
+}
+
+/* Neo Credit Card */
 .neo-card-container {
     grid-column: span 4;
     perspective: 1500px;
@@ -91,6 +144,7 @@
     overflow: hidden;
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     transform-style: preserve-3d;
+    animation: cardFloat 6s ease-in-out infinite;
 }
 
 .neo-card-visual:hover {
@@ -103,32 +157,17 @@
     letter-spacing: 0.25em;
     font-family: 'Courier New', monospace;
     margin: 1.5rem 0;
-    transform: translateZ(50px);
-    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transform: translateZ(60px);
 }
 
-.card-chip {
-    transform: translateZ(30px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    transform: translateZ(40px);
 }
 
-/* Glass Panels */
-.glass-panel {
-    background: var(--surface);
-    border: 1px solid var(--surface-border);
-    border-radius: 40px;
-    padding: 2.5rem;
-    box-shadow: var(--card-shadow);
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-    transform-style: preserve-3d;
-}
-
-.glass-panel:hover {
-    transform: translateY(-5px) translateZ(10px);
-    border-color: var(--primary);
-    box-shadow: var(--depth-shadow);
-}
-
+/* Analytics */
 .analytics-panel {
     grid-column: span 12;
     min-height: 450px;
@@ -142,42 +181,56 @@
     grid-column: span 7;
 }
 
+/* List Items */
 .item-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
     padding: 1.5rem;
     background: var(--background);
     border: 1px solid var(--surface-border);
     border-radius: 24px;
-    margin-bottom: 1rem;
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    margin-bottom: 1rem;
     transform-style: preserve-3d;
 }
 
 .item-row:hover {
-    transform: scale(1.02) translateZ(20px);
+    transform: scale(1.02) translateZ(15px);
     border-color: var(--primary);
     box-shadow: var(--depth-shadow);
 }
 
-/* 3D Animations */
-@keyframes float {
-    0% {
+.item-info {
+    flex: 1;
+}
+
+.item-title {
+    font-weight: 800;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+}
+
+.item-amount {
+    font-weight: 900;
+    font-size: 1.2rem;
+}
+
+/* Animations */
+@keyframes cardFloat {
+
+    0%,
+    100% {
         transform: translateY(0) rotateX(0);
     }
 
     50% {
         transform: translateY(-10px) rotateX(2deg);
     }
-
-    100% {
-        transform: translateY(0) rotateX(0);
-    }
 }
 
-.neo-card-visual {
-    animation: float 6s ease-in-out infinite;
-}
-
-/* Responsive Overrides */
+/* Responsive */
 @media (max-width: 1200px) {
 
     .stat-card-total,
@@ -192,7 +245,13 @@
     .neo-card-container,
     .wallets-panel,
     .activity-panel {
-        grid-column: span 12;
+        grid-column: span 12 !important;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2rem;
     }
 
     .dashboard-header h1 {
