@@ -106,6 +106,10 @@
 }
 
 /* User Profile */
+.profile-dropdown-container {
+  position: relative;
+}
+
 .user-profile-summary {
   display: flex;
   align-items: center;
