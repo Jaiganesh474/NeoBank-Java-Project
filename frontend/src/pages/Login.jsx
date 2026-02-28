@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { FcGoogle } from 'react-icons/fc';
 import { signInWithGoogle } from '../firebase';
 import './Auth.css';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaEnvelope, FaLock, FaMobileAlt, FaKey } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const Login = () => {
@@ -165,23 +165,23 @@ const Login = () => {
                 <form onSubmit={handleSubmit}>
                     {loginMode === 'password' && (
                         <>
-                            <div className="form-group">
-                                <label>Email Address</label>
+                            <div className="input-group">
+                                <FaEnvelope className="input-icon" />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="your@email.com"
+                                    placeholder="Email Address"
                                     required
                                 />
                             </div>
-                            <div className="form-group">
-                                <label>Password</label>
+                            <div className="input-group">
+                                <FaLock className="input-icon" />
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="••••••••"
+                                    placeholder="Password"
                                     required
                                 />
                             </div>
@@ -190,25 +190,25 @@ const Login = () => {
 
                     {loginMode === 'pin' && (
                         <>
-                            <div className="form-group">
-                                <label>Mobile Number</label>
+                            <div className="input-group">
+                                <FaMobileAlt className="input-icon" />
                                 <input
                                     type="text"
                                     value={phoneNumber}
                                     onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                                    placeholder="Enter registered mobile Number"
+                                    placeholder="Registered Mobile Number"
                                     required
                                 />
                             </div>
-                            <div className="form-group">
-                                <label>Login PIN</label>
+                            <div className="input-group">
+                                <FaKey className="input-icon" />
                                 <input
                                     type="password"
                                     value={pin}
                                     onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                                    placeholder="••••"
+                                    placeholder="4-Digit Login PIN"
                                     maxLength={4}
-                                    style={{ letterSpacing: '0.5em', textAlign: 'center', fontSize: '1.2rem' }}
+                                    style={{ letterSpacing: '0.5em', fontSize: '1.2rem' }}
                                     required
                                 />
                             </div>
@@ -217,81 +217,84 @@ const Login = () => {
 
                     {loginMode === 'otp' && (
                         <>
-                            <div className="form-group">
-                                <label>Mobile Number</label>
-                                <div style={{ position: 'relative' }}>
-                                    <input
-                                        type="text"
-                                        value={phoneNumber}
-                                        onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                                        placeholder="Enter registered mobile number"
-                                        required
-                                        disabled={otpStep === 2}
-                                        style={{ paddingRight: '100px' }}
-                                    />
-                                    {otpStep === 1 && (
-                                        <button
-                                            type="button"
-                                            onClick={handleRequestOtp}
-                                            disabled={otpLoading || phoneNumber.length < 10}
-                                            style={{
-                                                position: 'absolute',
-                                                right: '8px',
-                                                top: '50%',
-                                                transform: 'translateY(-50%)',
-                                                background: 'var(--primary)',
-                                                color: 'white',
-                                                border: 'none',
-                                                padding: '6px 12px',
-                                                borderRadius: '6px',
-                                                fontSize: '0.8rem',
-                                                cursor: 'pointer',
-                                                opacity: phoneNumber.length < 10 ? 0.5 : 1
-                                            }}
-                                        >
-                                            {otpLoading ? '...' : 'Get OTP'}
-                                        </button>
-                                    )}
-                                    {otpStep === 2 && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setOtpStep(1)}
-                                            style={{
-                                                position: 'absolute',
-                                                right: '8px',
-                                                top: '50%',
-                                                transform: 'translateY(-50%)',
-                                                background: 'transparent',
-                                                color: 'var(--primary)',
-                                                border: 'none',
-                                                fontSize: '0.75rem',
-                                                cursor: 'pointer',
-                                                textDecoration: 'underline'
-                                            }}
-                                        >
-                                            Change Number
-                                        </button>
-                                    )}
-                                </div>
+                            <div className="input-group">
+                                <FaMobileAlt className="input-icon" />
+                                <input
+                                    type="text"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                                    placeholder="Registered Mobile Number"
+                                    required
+                                    disabled={otpStep === 2}
+                                    style={{ paddingRight: '120px' }}
+                                />
+                                {otpStep === 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={handleRequestOtp}
+                                        disabled={otpLoading || phoneNumber.length < 10}
+                                        style={{
+                                            position: 'absolute',
+                                            right: '8px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            background: 'var(--primary)',
+                                            color: 'white',
+                                            border: 'none',
+                                            padding: '8px 16px',
+                                            borderRadius: '12px',
+                                            fontSize: '0.85rem',
+                                            fontWeight: '600',
+                                            cursor: 'pointer',
+                                            opacity: phoneNumber.length < 10 ? 0.5 : 1,
+                                            transition: 'all 0.3s'
+                                        }}
+                                    >
+                                        {otpLoading ? 'Sending...' : 'Get OTP'}
+                                    </button>
+                                )}
+                                {otpStep === 2 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setOtpStep(1)}
+                                        style={{
+                                            position: 'absolute',
+                                            right: '12px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            background: 'transparent',
+                                            color: 'var(--primary)',
+                                            border: 'none',
+                                            fontSize: '0.85rem',
+                                            fontWeight: '700',
+                                            cursor: 'pointer',
+                                            textDecoration: 'underline'
+                                        }}
+                                    >
+                                        Change
+                                    </button>
+                                )}
                             </div>
+
                             {otpStep === 2 && (
                                 <motion.div
-                                    className="form-group"
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
                                 >
-                                    <label>Enter 6-Digit OTP</label>
-                                    <input
-                                        type="text"
-                                        value={otp}
-                                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                                        placeholder="000000"
-                                        maxLength={6}
-                                        style={{ letterSpacing: '0.5em', textAlign: 'center', fontSize: '1.2rem', borderColor: 'var(--primary)' }}
-                                        required
-                                    />
-                                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '8px', textAlign: 'center' }}>
-                                        Didn't receive? <span onClick={handleRequestOtp} style={{ color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }}>Resend OTP</span>
+                                    <div className="input-group">
+                                        <FaKey className="input-icon" />
+                                        <input
+                                            type="text"
+                                            value={otp}
+                                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                            placeholder="6-Digit OTP"
+                                            maxLength={6}
+                                            style={{ letterSpacing: '0.5em', fontSize: '1.2rem', borderColor: 'var(--primary)' }}
+                                            required
+                                        />
+                                    </div>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '-0.5rem', marginBottom: '1.5rem' }}>
+                                        Didn't receive? <span onClick={handleRequestOtp} style={{ color: 'var(--primary)', cursor: 'pointer', fontWeight: '700' }}>Resend OTP</span>
                                     </p>
                                 </motion.div>
                             )}
