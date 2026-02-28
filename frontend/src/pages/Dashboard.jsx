@@ -598,15 +598,17 @@ const Dashboard = () => {
                     <div className="glass-panel wallets-panel">
                         <div className="panel-header">
                             <h3>My Wallets</h3>
-                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
                                 <button
                                     onClick={() => setShowAccountNumbers(!showAccountNumbers)}
-                                    style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center' }}
+                                    className="header-icon-btn"
                                     title={showAccountNumbers ? "Hide Account Numbers" : "Show Account Numbers"}
                                 >
                                     {showAccountNumbers ? <FaEyeSlash /> : <FaEye />}
                                 </button>
-                                <FaWallet style={{ color: 'var(--primary)' }} />
+                                <div className="header-icon-btn" style={{ background: 'transparent', border: 'none', cursor: 'default' }}>
+                                    <FaWallet style={{ color: 'var(--primary)', fontSize: '1.4rem' }} />
+                                </div>
                             </div>
                         </div>
                         <div className="accounts-list">
@@ -630,17 +632,14 @@ const Dashboard = () => {
                                             {showBalance ? `₹${acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '••••'}
                                         </div>
                                         <button
-                                            className="delete-item-btn"
+                                            className="delete-row-btn"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleInitiateDeleteAccount(acc.id);
                                             }}
-                                            style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: 'var(--error)', cursor: 'pointer', marginTop: '0.4rem', fontSize: '0.8rem', padding: '0.2rem 0.6rem', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '0.3rem', transition: 'all 0.2s' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
                                             title="Delete Account"
                                         >
-                                            <FaTrash /> <span style={{ fontWeight: 600 }}>Delete</span>
+                                            <FaTrash /> <span>Delete</span>
                                         </button>
                                     </div>
                                 </div>
@@ -651,27 +650,12 @@ const Dashboard = () => {
                     <div className="glass-panel activity-panel">
                         <div className="panel-header">
                             <h3>Recent Activity</h3>
-                            <motion.button
-                                className="text-btn"
-                                style={{
-                                    fontWeight: 700,
-                                    color: 'var(--primary)',
-                                    background: 'rgba(var(--primary-rgb), 0.1)',
-                                    padding: '0.6rem 1.2rem',
-                                    borderRadius: '10px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    cursor: 'pointer',
-                                    border: 'none',
-                                    fontSize: '0.9rem'
-                                }}
-                                whileHover={{ scale: 1.05, background: 'rgba(var(--primary-rgb), 0.2)' }}
-                                whileTap={{ scale: 0.95 }}
+                            <button
+                                className="dashboard-panel-btn"
                                 onClick={() => navigate('/transactions')}
                             >
                                 View All History <FaArrowRight style={{ fontSize: '0.8rem' }} />
-                            </motion.button>
+                            </button>
                         </div>
                         <div className="transaction-list">
                             {recentTransactions.map(tx => (
