@@ -615,7 +615,6 @@ const Dashboard = () => {
                                     key={acc.id}
                                     className="item-row clickable-row"
                                     onClick={() => navigate(`/account/${acc.id}`)}
-                                    style={{ cursor: 'pointer' }}
                                 >
                                     <div className="mini-icon" style={{ width: '45px', height: '45px', borderRadius: '12px', fontSize: '1.1rem' }}>
                                         <FaWallet />
@@ -624,17 +623,11 @@ const Dashboard = () => {
                                         <p className="item-title">{acc.accountType}</p>
                                         <span className="item-subtitle" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             No. {showAccountNumbers ? acc.accountNumber : `•••• ${acc.accountNumber.slice(-4)}`}
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); setShowAccountNumbers(!showAccountNumbers); }}
-                                                style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.85rem', padding: 0, opacity: 0.6 }}
-                                            >
-
-                                            </button>
                                         </span>
                                     </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div className="item-amount">
-                                            {showBalance ? `₹${acc.balance.toLocaleString()}` : '••••'}
+                                    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
+                                        <div className="item-amount" style={{ color: 'var(--text-main)' }}>
+                                            {showBalance ? `₹${acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '••••'}
                                         </div>
                                         <button
                                             className="delete-item-btn"
@@ -642,12 +635,12 @@ const Dashboard = () => {
                                                 e.stopPropagation();
                                                 handleInitiateDeleteAccount(acc.id);
                                             }}
-                                            style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', marginTop: '0.5rem', fontSize: '0.9rem', opacity: 0.6 }}
-                                            onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                                            onMouseLeave={e => e.currentTarget.style.opacity = 0.6}
+                                            style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: 'var(--error)', cursor: 'pointer', marginTop: '0.4rem', fontSize: '0.8rem', padding: '0.2rem 0.6rem', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '0.3rem', transition: 'all 0.2s' }}
+                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
                                             title="Delete Account"
                                         >
-                                            <FaTrash />
+                                            <FaTrash /> <span style={{ fontWeight: 600 }}>Delete</span>
                                         </button>
                                     </div>
                                 </div>
@@ -664,8 +657,8 @@ const Dashboard = () => {
                                     fontWeight: 700,
                                     color: 'var(--primary)',
                                     background: 'rgba(var(--primary-rgb), 0.1)',
-                                    padding: '0.5rem 1rem',
-                                    borderRadius: '8px',
+                                    padding: '0.6rem 1.2rem',
+                                    borderRadius: '10px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '0.5rem',
@@ -687,21 +680,23 @@ const Dashboard = () => {
                                         width: '45px',
                                         height: '45px',
                                         borderRadius: '12px',
-                                        fontSize: '1.1rem',
+                                        fontSize: '1.2rem',
                                         background: tx.amount < 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                         color: tx.amount < 0 ? 'var(--error)' : 'var(--success)'
                                     }}>
                                         {tx.amount < 0 ? <FaArrowUp /> : <FaArrowDown />}
                                     </div>
                                     <div className="item-info">
-                                        <p className="item-title">{tx.recipient}</p>
-                                        <span className="item-subtitle">{tx.date} • {tx.type}</span>
+                                        <p className="item-title" style={{ textTransform: 'capitalize' }}>{tx.recipient}</p>
+                                        <span className="item-subtitle">{tx.date} • <span style={{ opacity: 0.8, fontWeight: 600 }}>{tx.type}</span></span>
                                     </div>
-                                    <div>
-                                        <p className="item-amount" style={{ color: tx.amount < 0 ? 'var(--error)' : 'var(--success)', textAlign: 'right' }}>
-                                            {showBalance ? `${tx.amount < 0 ? '-' : '+'}₹${Math.abs(tx.amount).toFixed(2)}` : '••••'}
+                                    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                        <p className="item-amount" style={{ color: tx.amount < 0 ? 'var(--error)' : 'var(--success)', marginBottom: '0.2rem' }}>
+                                            {showBalance ? `${tx.amount < 0 ? '-' : '+'}₹${Math.abs(tx.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '••••'}
                                         </p>
-                                        <span className="item-subtitle" style={{ display: 'block', textAlign: 'right', fontSize: '0.7rem' }}>{tx.status}</span>
+                                        <span className={`status-badge ${tx.status?.toLowerCase()}`} style={{ padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.65rem' }}>
+                                            {tx.status}
+                                        </span>
                                     </div>
                                 </div>
                             ))}
