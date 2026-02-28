@@ -73,18 +73,20 @@ const Navbar = () => {
         <>
             <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
                 <div className="navbar-container">
-                    <div className="mobile-toggle" onClick={toggleMenu} style={{ marginLeft: 0, marginRight: '1rem' }}>
-                        <FaBars />
-                    </div>
-                    <div className="navbar-brand">
-                        <Link to="/" onClick={() => setIsOpen(false)}>
-                            <Logo size={28} className="brand-icon" />
-                            <span className="brand-text">NeoBank</span>
-                        </Link>
+                    <div className="navbar-left" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div className="mobile-toggle hide-on-desktop" onClick={toggleMenu} style={{ cursor: 'pointer', display: 'flex' }}>
+                            <FaBars style={{ fontSize: '1.25rem' }} />
+                        </div>
+                        <div className="navbar-brand">
+                            <Link to="/" onClick={() => setIsOpen(false)}>
+                                <Logo size={28} className="brand-icon" />
+                                <span className="brand-text hide-on-mobile-small">NeoBank</span>
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Desktop Actions */}
-                    <div className="navbar-actions-desktop">
+                    <div className="navbar-actions-desktop hide-on-mobile">
                         {user && <div className="desktop-links"><NavLinks /></div>}
 
                         <motion.button
@@ -156,6 +158,18 @@ const Navbar = () => {
                                 <Link to="/register" className="nav-link-btn primary-btn">Sign Up</Link>
                             </div>
                         )}
+                    </div>
+
+                    {/* Mobile Only Theme Toggle (Right side) */}
+                    <div className="navbar-actions-mobile hide-on-desktop">
+                        <motion.button
+                            className="theme-toggle-btn"
+                            onClick={toggleTheme}
+                            whileTap={{ scale: 0.9 }}
+                            aria-label="Toggle Theme"
+                        >
+                            {theme === 'light' ? <FaMoon /> : <FaSun style={{ color: '#facc15' }} />}
+                        </motion.button>
                     </div>
                 </div>
 

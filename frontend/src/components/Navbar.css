@@ -181,7 +181,19 @@
     height: 75px;
   }
 
-  .navbar-actions-desktop {
-    display: none;
+  .navbar-actions-desktop,
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .navbar-actions-mobile {
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (min-width: 1025px) {
+  .hide-on-desktop {
+    display: none !important;
   }
 }

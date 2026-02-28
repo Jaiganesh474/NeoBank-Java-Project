@@ -84,6 +84,27 @@
     border-top-left-radius: 4px;
 }
 
+.clear-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+    color: var(--error);
+    background: rgba(239, 68, 68, 0.1);
+    transform: scale(1.05);
+}
+
+
 .user .message-text {
     background: var(--primary);
     color: white;
