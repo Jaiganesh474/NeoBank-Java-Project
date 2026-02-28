@@ -51,18 +51,7 @@ const AiAssistant = () => {
     };
 
     const clearChat = () => {
-        setMessages([{ id: Date.now(), text: "Hello! I'm your Neo AI assistant. How can I help you today?", sender: 'ai' }]);
-        import('react-toastify').then(({ toast }) => toast.info("Conversation cleared"));
-    };
-
-    const handleSuggest = (text) => {
-        setInput(text);
-        // We need to wait for state to update or just call a modified send function
-        const fakeEvent = { preventDefault: () => { } };
-        setTimeout(() => {
-            const sendBtn = document.querySelector('.send-btn');
-            if (sendBtn) sendBtn.click();
-        }, 100);
+        setMessages([{ id: 1, text: "Chat cleared. How can I help you now?", sender: 'ai' }]);
     };
 
     return (
@@ -82,7 +71,7 @@ const AiAssistant = () => {
                             <FaRobot className="header-icon" />
                             <div>
                                 <h3>Neo AI Assistant</h3>
-                                <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>Powered by Gemini AI</span>
+                                <span>Powered by Gemini AI</span>
                             </div>
                         </div>
                         <button onClick={clearChat} className="clear-btn" title="Clear Chat">
@@ -98,7 +87,6 @@ const AiAssistant = () => {
                                     className={`message-bubble ${msg.sender}`}
                                     initial={{ opacity: 0, scale: 0.9, y: 10 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
                                 >
                                     <div className="message-icon">
                                         {msg.sender === 'ai' ? <FaRobot /> : <FaUser />}
@@ -136,10 +124,10 @@ const AiAssistant = () => {
                     <div className="ai-card">
                         <h4>Suggested Questions</h4>
                         <ul>
-                            <li onClick={() => handleSuggest("How do I open a new account?")}>How do I open a new account?</li>
-                            <li onClick={() => handleSuggest("What is the interest rate for savings?")}>What is the interest rate for savings?</li>
-                            <li onClick={() => handleSuggest("How can I save more money?")}>How can I save more money?</li>
-                            <li onClick={() => handleSuggest("Is my data secure?")}>Is my data secure?</li>
+                            <li onClick={() => setInput("How do I open a new account?")}>How do I open a new account?</li>
+                            <li onClick={() => setInput("What is the interest rate for savings?")}>What is the interest rate for savings?</li>
+                            <li onClick={() => setInput("How can I save more money?")}>How can I save more money?</li>
+                            <li onClick={() => setInput("Is my data secure?")}>Is my data secure?</li>
                         </ul>
                     </div>
                 </aside>
