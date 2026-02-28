@@ -4,7 +4,6 @@
     min-height: 100vh;
     background-color: var(--background);
     padding-bottom: 5rem;
-    perspective: 2000px;
 }
 
 .dashboard-content {
@@ -12,6 +11,7 @@
     margin: 0 auto;
     padding: 2.5rem 2rem;
     transform-style: preserve-3d;
+    perspective: 2000px;
 }
 
 /* Header */
