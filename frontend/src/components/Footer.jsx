@@ -49,8 +49,8 @@ const Footer = () => {
                     <div className="social-icons">
                         <motion.a whileHover={{ y: -5 }} href="#" target="_blank"><FaFacebook /></motion.a>
                         <motion.a whileHover={{ y: -5 }} href="#" target="_blank"><FaTwitter /></motion.a>
-                        <motion.a whileHover={{ y: -5 }} href="#" target="_blank"><FaLinkedin /></motion.a>
-                        <motion.a whileHover={{ y: -5 }} href="#" target="_blank"><FaGithub /></motion.a>
+                        <motion.a whileHover={{ y: -5 }} href="https://www.linkedin.com/in/jaiganesh-narayanan-7b9091276/" target="_blank"><FaLinkedin /></motion.a>
+                        <motion.a whileHover={{ y: -5 }} href="https://github.com/Jaiganesh474/" target="_blank"><FaGithub /></motion.a>
                     </div>
                 </div>
             </div>

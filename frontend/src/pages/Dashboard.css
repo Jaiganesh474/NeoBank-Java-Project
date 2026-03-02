@@ -84,6 +84,20 @@
     box-shadow: var(--depth-shadow);
 }
 
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.panel-header h3 {
+    font-size: 1.5rem;
+    font-weight: 850;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
 /* Total Balance Card */
 .stat-card-total {
     grid-column: span 4;

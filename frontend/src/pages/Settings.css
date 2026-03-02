@@ -176,6 +176,33 @@
     border-color: var(--error-light) !important;
 }
 
+.modal-content {
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: var(--surface-light);
+    border: 1px solid var(--surface-border);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--error);
+    background: rgba(239, 68, 68, 0.1);
+    transform: scale(1.1);
+}
+
 /* Sidebar Navigation */
 .settings-sidebar-nav {
     flex: 0 0 260px;
@@ -355,5 +382,17 @@
     .btn-premium {
         height: 55px !important;
         font-size: 0.95rem !important;
+    }
+
+    .modal-content {
+        padding: 1.5rem !important;
+        margin: 1rem;
+        width: 90% !important;
+        max-width: 95% !important;
+    }
+
+    .modal-close {
+        top: 1rem;
+        right: 1rem;
     }
 }
