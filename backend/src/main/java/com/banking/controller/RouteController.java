@@ -6,7 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class RouteController {
 
-    @GetMapping(value = { "/", "/{path:[^\\.]*}", "/{path:^(?!api|static).*$}/**" })
+    @GetMapping(value = {
+            "/",
+            "/{path:[^\\.]*}",
+            "/{path:^(?!api$).*$}/**/{path2:[^\\.]*}"
+    })
     public String forward() {
         return "forward:/index.html";
     }
