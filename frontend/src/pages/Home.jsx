@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaShieldAlt, FaBolt, FaChartLine, FaRobot, FaPalette } from 'react-icons/fa';
+import { FaShieldAlt, FaBolt, FaChartLine, FaRobot, FaPalette, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import Footer from '../components/Footer';
 import './Home.css';
 
@@ -64,14 +64,53 @@ const Home = () => {
                     </motion.div>
                 </div>
                 <div className="hero-visual-3d">
-                    <div className="abstract-shape"></div>
-                    {/* Floating Cards or 3D Elements could go here */}
                     <motion.div
-                        className="glass-panel-premium"
-                        style={{ width: '300px', height: '200px', borderRadius: '30px' }}
-                        animate={{ y: [0, -20, 0], rotateX: [0, 5, 0] }}
-                        transition={{ duration: 4, repeat: Infinity }}
-                    />
+                        className="floating-card-ui"
+                        animate={{ y: [0, -20, 0], rotateX: [5, 10, 5], rotateY: [-15, -10, -15] }}
+                        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                        <div className="card-chip"></div>
+                        <div className="card-logo">NeoBank</div>
+                        <div className="card-number">•••• •••• •••• 4289</div>
+                        <div className="card-footer">
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontSize: '0.65rem', opacity: 0.7 }}>CARDHOLDER</span>
+                                <span className="card-name">JOHN DOE</span>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
+                                <span style={{ fontSize: '0.65rem', opacity: 0.7 }}>VALID THRU</span>
+                                <span className="card-exp">12/28</span>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        className="floating-badge badge-income"
+                        animate={{ y: [0, 15, 0], x: [0, 10, 0] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                    >
+                        <div className="badge-icon" style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--success)' }}>
+                            <FaArrowDown />
+                        </div>
+                        <div className="badge-info">
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Income</span>
+                            <strong style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: 900 }}>+₹45,000.00</strong>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        className="floating-badge badge-expense"
+                        animate={{ y: [0, -15, 0], x: [0, -10, 0] }}
+                        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                    >
+                        <div className="badge-icon" style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--error)' }}>
+                            <FaArrowUp />
+                        </div>
+                        <div className="badge-info">
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Expense</span>
+                            <strong style={{ fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: 900 }}>-₹2,450.00</strong>
+                        </div>
+                    </motion.div>
                 </div>
             </section>
 
