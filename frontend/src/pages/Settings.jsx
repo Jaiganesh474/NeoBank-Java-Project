@@ -1210,7 +1210,7 @@ const Settings = () => {
                 <AnimatePresence>
                     {showPasswordModal && (
                         <motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ zIndex: 1500 }}>
-                            <motion.div className="modal-content" initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} style={{ padding: '2.5rem', borderRadius: '28px', maxWidth: '450px' }}>
+                            <motion.div className="modal-content" initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}>
                                 <button className="modal-close" onClick={() => setShowPasswordModal(false)}><FaTimes /></button>
                                 <div style={{ textAlign: 'center', marginBottom: '1.8rem' }}>
                                     <div style={{ fontSize: '2.5rem', color: 'var(--primary)', marginBottom: '1rem' }}><FaLock /></div>
@@ -1247,32 +1247,13 @@ const Settings = () => {
                         >
                             <motion.div
                                 className="modal-content"
-                                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                                animate={{ scale: 1, opacity: 1, y: 0 }}
-                                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                                style={{ padding: '2.5rem', borderRadius: '32px', maxWidth: '450px' }}
+                                initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                                animate={{ scale: 1, y: 0, opacity: 1 }}
+                                exit={{ scale: 0.9, y: 20, opacity: 0 }}
                             >
                                 <button
                                     className="modal-close"
                                     onClick={() => setShowOtpModal(false)}
-                                    style={{
-                                        position: 'absolute',
-                                        top: '1.5rem',
-                                        right: '1.5rem',
-                                        background: '#f1f5f9',
-                                        border: '1px solid #e2e8f0',
-                                        borderRadius: '50%',
-                                        width: '32px',
-                                        height: '32px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        cursor: 'pointer',
-                                        color: '#64748b',
-                                        transition: 'all 0.2s'
-                                    }}
-                                    onMouseEnter={e => e.currentTarget.style.color = '#ef4444'}
-                                    onMouseLeave={e => e.currentTarget.style.color = '#64748b'}
                                 >
                                     <FaTimes size={14} />
                                 </button>
@@ -1354,53 +1335,21 @@ const Settings = () => {
                 <AnimatePresence>
                     {showPinModal && (
                         <motion.div
+                            className="modal-overlay"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            style={{
-                                position: 'fixed',
-                                inset: 0,
-                                background: 'rgba(30, 41, 59, 0.7)',
-                                backdropFilter: 'blur(15px)',
-                                zIndex: 1100,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: '1rem'
-                            }}
+                            style={{ zIndex: 1100 }}
                         >
                             <motion.div
+                                className="modal-content"
                                 initial={{ scale: 0.9, y: 30, opacity: 0 }}
                                 animate={{ scale: 1, y: 0, opacity: 1 }}
                                 exit={{ scale: 0.9, y: 30, opacity: 0 }}
-                                style={{
-                                    background: '#ffffff',
-                                    width: '100%',
-                                    maxWidth: '480px',
-                                    borderRadius: '32px',
-                                    padding: '2.5rem',
-                                    position: 'relative',
-                                    boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.15)',
-                                    border: '1px solid #e2e8f0'
-                                }}
                             >
                                 <button
+                                    className="modal-close"
                                     onClick={() => { setShowPinModal(false); setOldTpin(''); setTpin(''); setConfirmTpin(''); }}
-                                    style={{
-                                        position: 'absolute',
-                                        right: '25px',
-                                        top: '25px',
-                                        background: '#f1f5f9',
-                                        border: 'none',
-                                        color: '#64748b',
-                                        cursor: 'pointer',
-                                        width: '40px',
-                                        height: '40px',
-                                        borderRadius: '50%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center'
-                                    }}
                                 >
                                     <FaTimes size={18} />
                                 </button>
@@ -1431,7 +1380,7 @@ const Settings = () => {
                                     </p>
                                 </div>
 
-                                <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
+                                <div className="modal-inner-box">
                                     {modalType === 'login-pin' && loginPinMode === 'reset' && (
                                         <div style={{ marginBottom: '1.5rem' }}>
                                             <label style={{ fontSize: '0.8rem', color: '#64748b', display: 'block', marginBottom: '8px', fontWeight: '600' }}>Original PIN</label>
