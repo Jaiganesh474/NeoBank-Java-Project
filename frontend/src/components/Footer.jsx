@@ -21,25 +21,25 @@ const Footer = () => {
                     <div className="link-group">
                         <h4>Company</h4>
                         <ul>
-                            <li><Link to="/about">About Us</Link></li>
-                            <li><Link to="/careers">Careers</Link></li>
-                            <li><Link to="/press">Press</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/about">About Us</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/careers">Careers</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/press">Press</Link></li>
                         </ul>
                     </div>
                     <div className="link-group">
                         <h4>Security</h4>
                         <ul>
-                            <li><Link to="/data-privacy">Data Privacy</Link></li>
-                            <li><Link to="/fraud-care">Fraud Care</Link></li>
-                            <li><Link to="/insurance">Insurance</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/data-privacy">Data Privacy</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/fraud-care">Fraud Care</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/insurance">Insurance</Link></li>
                         </ul>
                     </div>
                     <div className="link-group">
                         <h4>Support</h4>
                         <ul>
-                            <li><Link to="/help-center">Help Center</Link></li>
-                            <li><Link to="/contact-us">Contact Us</Link></li>
-                            <li><Link to="/api-docs">API Docs</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/help-center">Help Center</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/contact-us">Contact Us</Link></li>
+                            <li onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><Link to="/api-docs">API Docs</Link></li>
                         </ul>
                     </div>
                 </div>
@@ -58,8 +58,8 @@ const Footer = () => {
             <div className="footer-bottom">
                 <p>© 2026 NeoBank. Built with passion for excellence.</p>
                 <div className="legal-links">
-                    <Link to="/privacy-policy">Privacy Policy</Link>
-                    <Link to="/terms-of-service">Terms of Service</Link>
+                    <Link to="/privacy-policy" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Privacy Policy</Link>
+                    <Link to="/terms-of-service" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Terms of Service</Link>
                 </div>
             </div>
         </footer>

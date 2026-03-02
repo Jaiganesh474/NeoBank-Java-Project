@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 const PageLayout = ({ title, children }) => (
     <div className="page-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Navbar />
+        
         <main style={{ flex: 1, padding: '4rem 2rem', maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                 <h1 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'var(--text-main)' }}>{title}</h1>
