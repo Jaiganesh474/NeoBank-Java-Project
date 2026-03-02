@@ -45,7 +45,7 @@ const Home = () => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                     >
                         Experience the next generation of financial freedom.
-                        Smart, secure, and beautiful banking for everyone.
+                        Smart, secure, and personalized digital banking for everyone.
                     </motion.p>
                     <motion.div
                         className="hero-btns"
