@@ -2,6 +2,7 @@
 
 .auth-container {
     min-height: 100vh;
+    margin-top: -80px;
     background-color: var(--background);
     display: flex;
     justify-content: center;

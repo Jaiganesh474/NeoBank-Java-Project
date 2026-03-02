@@ -5,16 +5,19 @@ import { motion } from 'framer-motion';
 import { FcGoogle } from 'react-icons/fc';
 import { signInWithGoogle } from '../firebase';
 import './Auth.css';
-import { FaArrowLeft, FaEnvelope, FaLock, FaMobileAlt, FaKey } from 'react-icons/fa';
+import { FaArrowLeft, FaEnvelope, FaLock, FaMobileAlt, FaKey, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [loginMode, setLoginMode] = useState('password'); // password, pin, otp
     const [phoneNumber, setPhoneNumber] = useState('');
     const [pin, setPin] = useState('');
+    const [showPin, setShowPin] = useState(false);
     const [otp, setOtp] = useState('');
+    const [showOtp, setShowOtp] = useState(false);
     const [otpStep, setOtpStep] = useState(1); // 1: Request, 2: Verify
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -178,12 +181,20 @@ const Login = () => {
                             <div className="input-group">
                                 <FaLock className="input-icon" />
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Password"
                                     required
+                                    style={{ paddingRight: '45px' }}
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem', zIndex: 5 }}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
                             </div>
                         </>
                     )}
@@ -203,14 +214,21 @@ const Login = () => {
                             <div className="input-group">
                                 <FaKey className="input-icon" />
                                 <input
-                                    type="password"
+                                    type={showPin ? "text" : "password"}
                                     value={pin}
                                     onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
                                     placeholder="4-Digit Login PIN"
                                     maxLength={4}
-                                    style={{ letterSpacing: '0.5em', fontSize: '1.2rem' }}
+                                    style={{ letterSpacing: '0.5em', fontSize: '1.2rem', paddingRight: '45px' }}
                                     required
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPin(!showPin)}
+                                    style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem', zIndex: 5 }}
+                                >
+                                    {showPin ? <FaEyeSlash /> : <FaEye />}
+                                </button>
                             </div>
                         </>
                     )}
@@ -284,14 +302,21 @@ const Login = () => {
                                     <div className="input-group">
                                         <FaKey className="input-icon" />
                                         <input
-                                            type="text"
+                                            type={showOtp ? "text" : "password"}
                                             value={otp}
                                             onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                             placeholder="6-Digit OTP"
                                             maxLength={6}
-                                            style={{ letterSpacing: '0.5em', fontSize: '1.2rem', borderColor: 'var(--primary)' }}
+                                            style={{ letterSpacing: '0.5em', fontSize: '1.2rem', borderColor: 'var(--primary)', paddingRight: '45px' }}
                                             required
                                         />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowOtp(!showOtp)}
+                                            style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem', zIndex: 5 }}
+                                        >
+                                            {showOtp ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
                                     </div>
                                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '-0.5rem', marginBottom: '1.5rem' }}>
                                         Didn't receive? <span onClick={handleRequestOtp} style={{ color: 'var(--primary)', cursor: 'pointer', fontWeight: '700' }}>Resend OTP</span>
@@ -306,8 +331,8 @@ const Login = () => {
                     </button>
 
                     {(loginMode === 'password' || loginMode === 'pin') && (
-                        <div className="forgot-password-link">
-                            <Link to={`/forgot-password?mode=${loginMode}`}>Forgot {loginMode === 'password' ? 'Password' : 'PIN'}?</Link>
+                        <div className="forgot-password-link" style={{ textAlign: 'right', marginTop: '1rem', marginBottom: '0.5rem' }}>
+                            <Link to={`/forgot-password?mode=${loginMode}`} style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: '600', transition: 'color 0.3s' }}>Forgot {loginMode === 'password' ? 'Password' : 'PIN'}?</Link>
                         </div>
                     )}
 
@@ -315,7 +340,7 @@ const Login = () => {
                         <span>OR</span>
                     </div>
 
-                    <button type="button" className="google-btn" onClick={handleGoogleLogin}>
+                    <button type="button" className="google-btn" style={{cursor:'pointer'}} onClick={handleGoogleLogin}>
                         <FcGoogle className="google-icon" />
                         Sign in with Google
                     </button>
