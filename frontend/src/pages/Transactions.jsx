@@ -6,8 +6,8 @@ import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
 import { FaArrowUp, FaArrowDown, FaSearch, FaCalendarAlt, FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import './Dashboard.css'; // Reuse dashboard styles for consistency
 
 const Transactions = () => {
@@ -123,7 +123,7 @@ const Transactions = () => {
             tableRows.push(txData);
         });
 
-        doc.autoTable({
+        autoTable(doc, {
             head: [tableColumn],
             body: tableRows,
             startY: 42,
