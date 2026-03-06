@@ -125,7 +125,7 @@ const OpenAccount = () => {
                                             <FaPhone className="input-icon" />
                                             <input
                                                 type="tel"
-                                                placeholder="e.g. 9876543210"
+                                                placeholder="   e.g. 9876543210"
                                                 value={phoneNumber}
                                                 onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
                                                 required
