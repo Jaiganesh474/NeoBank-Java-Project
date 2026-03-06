@@ -6,6 +6,8 @@ import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
 import { FaArrowUp, FaArrowDown, FaSearch, FaCalendarAlt, FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import './Dashboard.css'; // Reuse dashboard styles for consistency
 
 const Transactions = () => {
@@ -13,6 +15,8 @@ const Transactions = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('ALL'); // ALL, CREDIT, DEBIT
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -47,13 +51,89 @@ const Transactions = () => {
             matchesType = tx.amount < 0 || tx.type === 'TRANSFER' || tx.type === 'WITHDRAWAL';
         }
 
-        return matchesSearch && matchesType;
+        let matchesDate = true;
+        const txDate = new Date(tx.createdAt);
+        if (startDate) {
+            matchesDate = matchesDate && txDate >= new Date(startDate);
+        }
+        if (endDate) {
+            // Include entire end date by running until end of the day
+            const eDate = new Date(endDate);
+            eDate.setHours(23, 59, 59, 999);
+            matchesDate = matchesDate && txDate <= eDate;
+        }
+
+        return matchesSearch && matchesType && matchesDate;
     });
 
     const getUserFriendlyType = (type, amount) => {
         if (type === 'TRANSFER') return 'Sent Money';
         if (type === 'DEPOSIT') return 'Received Money';
         return type ? (type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()) : 'Transaction';
+    };
+
+    const generatePDF = () => {
+        if (filteredTransactions.length === 0) {
+            toast.warning("No transactions to download.");
+            return;
+        }
+
+        const doc = new jsPDF();
+
+        // Title
+        doc.setFontSize(22);
+        doc.setTextColor(37, 99, 235); // var(--primary)
+        doc.text("NeoBank Account Statement", 14, 22);
+
+        // Subtitle / Date Range
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        let dateRangeStr = "All Time";
+        if (startDate && endDate) {
+            dateRangeStr = `From ${startDate} to ${endDate}`;
+        } else if (startDate) {
+            dateRangeStr = `Since ${startDate}`;
+        } else if (endDate) {
+            dateRangeStr = `Until ${endDate}`;
+        }
+        doc.text(`Transaction Period: ${dateRangeStr}`, 14, 30);
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 36);
+
+        // Prep table data
+        const tableColumn = ["Date", "Description", "Type", "ID", "Amount (INR)", "Status"];
+        const tableRows = [];
+
+        filteredTransactions.forEach(tx => {
+            const date = new Date(tx.createdAt).toLocaleDateString();
+            const desc = tx.recipientName || tx.recipient || tx.description || 'N/A';
+            const typeFriendly = getUserFriendlyType(tx.type, tx.amount);
+
+            const isNegative = tx.type === 'TRANSFER' || tx.type === 'WITHDRAWAL' || tx.type === 'PAYMENT';
+            const amountStr = `${isNegative ? '-' : '+'} ${(Math.abs(tx.amount)).toFixed(2)}`;
+            const statusStr = tx.status || 'COMPLETED';
+
+            const txData = [
+                date,
+                desc,
+                typeFriendly,
+                tx.transactionId || 'N/A',
+                amountStr,
+                statusStr
+            ];
+            tableRows.push(txData);
+        });
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 42,
+            styles: { fontSize: 9 },
+            headStyles: { fillColor: [37, 99, 235] },
+            alternateRowStyles: { fillColor: [241, 245, 249] },
+        });
+
+        doc.save(`NeoBank_Statement_${new Date().getTime()}.pdf`);
+        toast.success("Statement downloaded successfully!");
     };
 
     return (
@@ -131,6 +211,52 @@ const Transactions = () => {
                                     {type === 'ALL' ? 'All' : type === 'CREDIT' ? 'Income' : 'Expense'}
                                 </button>
                             ))}
+                        </div>
+
+                        {/* Date Filters & Download Button Wrapper */}
+                        <div className="date-filter-group" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', width: '100%', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>From:</span>
+                                    <input
+                                        type="date"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        style={{
+                                            padding: '0.5rem 0.8rem',
+                                            borderRadius: '10px',
+                                            border: '1px solid var(--surface-border)',
+                                            background: 'var(--input-bg)',
+                                            color: 'var(--text-main)',
+                                            fontFamily: 'inherit'
+                                        }}
+                                    />
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>To:</span>
+                                    <input
+                                        type="date"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        style={{
+                                            padding: '0.5rem 0.8rem',
+                                            borderRadius: '10px',
+                                            border: '1px solid var(--surface-border)',
+                                            background: 'var(--input-bg)',
+                                            color: 'var(--text-main)',
+                                            fontFamily: 'inherit'
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={generatePDF}
+                                className="dashboard-panel-btn"
+                                style={{ background: 'var(--primary)', color: 'white', padding: '0.6rem 1.5rem', alignSelf: 'flex-start' }}
+                            >
+                                <span style={{ marginRight: '0.4rem' }}>📄</span> Download Statement
+                            </button>
                         </div>
                     </div>
 
