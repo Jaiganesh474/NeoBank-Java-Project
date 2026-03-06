@@ -130,7 +130,7 @@ const OpenAccount = () => {
                                                 onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
                                                 required
                                                 className="premium-input"
-                                                style={{ paddingLeft: '3.2rem' }}
+                                                style={{ paddingLeft: '4rem' }}
                                             />
                                         </div>
                                         <small>Enter your 10-digit mobile number.</small>
@@ -176,7 +176,7 @@ const OpenAccount = () => {
                                                     value={accountType}
                                                     onChange={(e) => setAccountType(e.target.value)}
                                                     className="premium-input"
-                                                    style={{ paddingLeft: '3.2rem' }}
+                                                    style={{ paddingLeft: '4rem' }}
                                                 >
                                                     <option value="SAVINGS">Savings Account</option>
                                                     <option value="CHECKING">Checking Account</option>
@@ -210,7 +210,7 @@ const OpenAccount = () => {
                                                 maxLength="6"
                                                 required
                                                 className="premium-input otp-tracking-small"
-                                                style={{ paddingLeft: '3.2rem' }}
+                                                style={{ paddingLeft: '4rem' }}
                                             />
                                         </div>
                                     </div>
