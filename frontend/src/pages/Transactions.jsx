@@ -26,9 +26,34 @@ const Transactions = () => {
 
     const fetchTransactions = async () => {
         try {
-            const res = await api.get('/accounts/transactions');
-            console.log(`DEBUG: Transactions page fetched ${res.data.length} records`);
-            setTransactions(res.data);
+            const [accountsRes, txRes] = await Promise.all([
+                api.get('/accounts'),
+                api.get('/accounts/transactions')
+            ]);
+
+            const totalCurrentBalance = accountsRes.data.reduce((sum, acc) => sum + Number(acc.balance), 0);
+            const myAccountNumbers = accountsRes.data.map(a => a.accountNumber);
+
+            const sortedTx = [...txRes.data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            let currentBal = totalCurrentBalance;
+
+            const txWithBalance = sortedTx.map(tx => {
+                const balanceAfterTx = currentBal;
+                const isInternal = (tx.type === 'TRANSFER' || tx.type === 'DEPOSIT') && myAccountNumbers.includes(tx.recipientAccountNumber);
+
+                if (!isInternal) {
+                    if (['TRANSFER', 'WITHDRAWAL', 'PAYMENT'].includes(tx.type)) {
+                        currentBal += Number(tx.amount);
+                    } else if (['DEPOSIT', 'CREDIT', 'REFUND'].includes(tx.type)) {
+                        currentBal -= Number(tx.amount);
+                    }
+                }
+
+                return { ...tx, runningBalance: balanceAfterTx };
+            });
+
+            console.log(`DEBUG: Transactions page fetched ${txWithBalance.length} records`);
+            setTransactions(txWithBalance);
         } catch (err) {
             console.error("Failed to fetch transactions", err);
             toast.error("Failed to load transaction history");
@@ -100,7 +125,7 @@ const Transactions = () => {
         doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 36);
 
         // Prep table data
-        const tableColumn = ["Date", "Description", "Type", "ID", "Amount (INR)", "Status"];
+        const tableColumn = ["Date", "Description", "Type", "ID", "Amount (INR)", "Balance (INR)"];
         const tableRows = [];
 
         filteredTransactions.forEach(tx => {
@@ -110,7 +135,7 @@ const Transactions = () => {
 
             const isNegative = tx.type === 'TRANSFER' || tx.type === 'WITHDRAWAL' || tx.type === 'PAYMENT';
             const amountStr = `${isNegative ? '-' : '+'} ${(Math.abs(tx.amount)).toFixed(2)}`;
-            const statusStr = tx.status || 'COMPLETED';
+            const balanceStr = tx.runningBalance !== undefined ? tx.runningBalance.toFixed(2) : '-';
 
             const txData = [
                 date,
@@ -118,7 +143,7 @@ const Transactions = () => {
                 typeFriendly,
                 tx.transactionId || 'N/A',
                 amountStr,
-                statusStr
+                balanceStr
             ];
             tableRows.push(txData);
         });
