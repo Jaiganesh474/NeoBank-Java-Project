@@ -216,6 +216,15 @@
     transform: translateZ(5px);
 }
 
+/* Specificity fix for icon overlapping */
+.input-wrapper-premium>.premium-input {
+    padding-left: 3.5rem !important;
+}
+
+.input-icon {
+    pointer-events: none;
+}
+
 /* Buttons */
 .btn-premium {
     width: 100%;

@@ -125,12 +125,11 @@ const OpenAccount = () => {
                                             <FaPhone className="input-icon" />
                                             <input
                                                 type="tel"
-                                                placeholder="   e.g. 9876543210"
+                                                placeholder="e.g. 9876543210"
                                                 value={phoneNumber}
                                                 onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
                                                 required
                                                 className="premium-input"
-                                                style={{ paddingLeft: '4rem' }}
                                             />
                                         </div>
                                         <small>Enter your 10-digit mobile number.</small>
@@ -176,7 +175,6 @@ const OpenAccount = () => {
                                                     value={accountType}
                                                     onChange={(e) => setAccountType(e.target.value)}
                                                     className="premium-input"
-                                                    style={{ paddingLeft: '4rem' }}
                                                 >
                                                     <option value="SAVINGS">Savings Account</option>
                                                     <option value="CHECKING">Checking Account</option>
@@ -192,7 +190,6 @@ const OpenAccount = () => {
                                                     value={initialDeposit}
                                                     onChange={(e) => setInitialDeposit(e.target.value)}
                                                     className="premium-input"
-                                                    style={{ paddingLeft: '2.5rem' }}
                                                 />
                                             </div>
                                         </div>
@@ -210,7 +207,6 @@ const OpenAccount = () => {
                                                 maxLength="6"
                                                 required
                                                 className="premium-input otp-tracking-small"
-                                                style={{ paddingLeft: '4rem' }}
                                             />
                                         </div>
                                     </div>
